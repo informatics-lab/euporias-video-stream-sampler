@@ -1,50 +1,91 @@
 'use strict';
 
-const SAMPLING_INTERVAL = 3000;
 const CAMERA_FRAME_RATE = 1000 / 20;
-const LARGE_GRID_DIM = 8;
-const SMALL_GRID_DIM = 6;
 
+var largeGridDim, smallGridDim;
+var mouseIsDown = 0;
 var click, release;
-var sampleLoop, sample;
-var contentDiv = document.getElementById('content');
+var startX, startY, endX, endY;
+var samplingInterval, sampleLoop, sample, sampleDiv;
+var video, videoCanvas, videoCanvasCtx
 
-var video = document.createElement('video');
-video.width = 600;
-video.height = 400;
-var videoCanvas = document.createElement('canvas');
-videoCanvas.width = 600;
-videoCanvas.height = 400;
-contentDiv.appendChild(videoCanvas);
+initControls();
+initVideo();
 
-var sampleDiv = document.createElement('div');
-sampleDiv.id = 'samples';
-contentDiv.appendChild(sampleDiv);
+function initVideo() {
+    video = document.createElement('video');
+    video.width = 600;
+    video.height = 400;
+    videoCanvas = document.getElementById('videoCanvas');
+    videoCanvas.width = 600;
+    videoCanvas.height = 400;
 
-var videoCanvasCtx = videoCanvas.getContext('2d');
-videoCanvas.addEventListener('mousedown', function (evt) {
-    console.log("click", evt);
-    click = evt;
-});
-videoCanvas.addEventListener('mouseup', function (evt) {
-    console.log("release", evt);
-    release = evt;
-    createSamples();
-});
-setInterval(function () {
-    videoCanvasCtx.clearRect(0, 0, 600, 400);
-    videoCanvasCtx.drawImage(video, 0, 0, 600, 400, 0, 0, 600, 400);
-}, CAMERA_FRAME_RATE);
+    videoCanvasCtx = videoCanvas.getContext('2d');
+    videoCanvas.addEventListener('mousedown', mouseDown, false);
+    videoCanvas.addEventListener('mouseup', mouseUp, false);
+    videoCanvas.addEventListener("mousemove", mouseXY, false);
 
+    setInterval(function () {
+        videoCanvasCtx.clearRect(0, 0, 600, 400);
+        videoCanvasCtx.drawImage(video, 0, 0, 600, 400, 0, 0, 600, 400);
+        drawSquare();
+    }, CAMERA_FRAME_RATE);
+}
+
+function initControls() {
+    var dim1 = document.getElementById('grid-dim-1');
+    var dim2 = document.getElementById('grid-dim-2');
+    var sampleInterval = document.getElementById('sample-interval');
+
+    dim1.addEventListener('change', function(evt){
+        var value1 = evt.target.value;
+        var value2 = dim2.value;
+        setGridDims(value1, value2);
+        if(release) {
+            createSamples();
+        }
+    });
+
+    dim2.addEventListener('change', function(evt){
+        var value2 = evt.target.value;
+        var value1 = dim1.value;
+        setGridDims(value1, value2);
+        if(release) {
+            createSamples();
+        }
+    });
+
+    sampleInterval.addEventListener('change', function(evt){
+        var value = evt.target.value;
+        samplingInterval = value * 1000;
+        if(sampleLoop) {
+            createSamples();
+        }
+    });
+
+    sampleDiv = document.getElementById('samples');
+    setGridDims(dim1.value, dim2.value);
+    samplingInterval = sampleInterval.value * 1000;
+}
+
+function setGridDims(val1, val2) {
+    if(val1 > val2) {
+        largeGridDim = val1;
+        smallGridDim = val2
+    } else {
+        largeGridDim = val2;
+        smallGridDim = val1;
+    }
+}
 
 function createSamples() {
-    console.log("Initialising sample");
+    console.log("Initialising sample, sampling at "+samplingInterval+" millis");
 
     clearSamples();
 
     var clickPattern = getClickPattern(click, release);
     var grid = getSampleGrid(clickPattern);
-
+    sampleDiv.setAttribute('style', 'width:'+ (grid.totalWidth+ (grid.numColumns*8))+"px");
     var sampleContexts = [];
     for (var i = 0; i < grid.numCells; i++) {
         var sampleCanvas = document.createElement('canvas');
@@ -99,7 +140,7 @@ function createSamples() {
         // if diff number is negative cell pixels have become darker
         console.log(sample);
 
-    }, SAMPLING_INTERVAL);
+    }, samplingInterval);
 
 };
 
@@ -112,6 +153,7 @@ function evaluateData(data) {
 
 function clearSamples() {
     while (sampleDiv.hasChildNodes()) {
+        sampleDiv.removeAttribute('style');
         sampleDiv.removeChild(sampleDiv.lastChild);
     }
     if (sampleLoop) {
@@ -133,12 +175,12 @@ function getSampleGrid(clickPattern) {
 
     if (totalWidth > totalHeight) {
         //landscape
-        rows = SMALL_GRID_DIM;
-        columns = LARGE_GRID_DIM;
+        rows = smallGridDim;
+        columns = largeGridDim;
     } else {
         //portrait
-        rows = LARGE_GRID_DIM;
-        columns = SMALL_GRID_DIM;
+        rows = largeGridDim;
+        columns = smallGridDim;
     }
 
     cellWidth = Math.floor(totalWidth / columns);
@@ -195,6 +237,71 @@ function getClickPattern(click, release) {
     return {
         topLeft: topLeft,
         bottomRight: bottomRight
+    };
+}
+
+function mouseDown(eve) {
+    mouseIsDown = 1;
+    var pos = getMousePos(videoCanvas, eve);
+    startX = endX = pos.x;
+    startY = endY = pos.y;
+    drawSquare(); //update
+    click = eve;
+}
+
+function mouseUp(eve) {
+    if (mouseIsDown !== 0) {
+        mouseIsDown = 0;
+        var pos = getMousePos(videoCanvas, eve);
+        endX = pos.x;
+        endY = pos.y;
+        drawSquare(); //update on mouse-up
+    }
+    release = eve;
+    createSamples();
+}
+
+function mouseXY(eve) {
+
+    if (mouseIsDown !== 0) {
+        var pos = getMousePos(videoCanvas, eve);
+        endX = pos.x;
+        endY = pos.y;
+
+        drawSquare();
+    }
+}
+
+function drawSquare() {
+    // creating a square
+    if(startX && startY && endX && endY) {
+
+
+        var w = endX - startX;
+        var h = endY - startY;
+        var offsetX = (w < 0) ? w : 0;
+        var offsetY = (h < 0) ? h : 0;
+        var width = Math.abs(w);
+        var height = Math.abs(h);
+
+        // videoCanvasCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+
+        videoCanvasCtx.beginPath();
+        videoCanvasCtx.rect(startX + offsetX, startY + offsetY, width, height);
+        // videoCanvasCtx.fillStyle = "yellow";
+        // videoCanvasCtx.opacity = 0.6;
+        // videoCanvasCtx.fill();
+        videoCanvasCtx.lineWidth = 3;
+        videoCanvasCtx.strokeStyle = 'blue';
+        videoCanvasCtx.stroke();
+    }
+}
+
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
     };
 }
 
