@@ -6,7 +6,9 @@
   "main": "src/js/main.js",
   "scripts": {},
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "request": "^2.75.0"
+  },
   "private": true,
   "devDependencies": {
     "browser-sync": "^2.14.0",
