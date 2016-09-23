@@ -16,9 +16,9 @@ Available route resources:
  * POST `/strike` : accepts JSON array of integers indicating which pots should be struck.  
  
 ###strike request
-To strike a pot, `POST` a JSON array object containing the pot id (as an integer) to the `/strike` resource :  
+To strike a pot, `POST` a JSON array object containing the servo id (as an integer) to the `/strike` resource :  
  * strike via servo (currently striking method supported) :  
 ```
- [ 1,2,3, ... ]  
+ [ 0,1,2,3, ... ]  
 ```  
 
