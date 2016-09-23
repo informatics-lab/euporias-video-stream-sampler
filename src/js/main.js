@@ -1,6 +1,8 @@
 'use strict';
-
 const CAMERA_FRAME_RATE = 1000 / 20;
+const STRIKE_THRESHOLD = 100;
+
+var request = require('request');
 
 var largeGridDim, smallGridDim;
 var mouseIsDown = 0;
@@ -37,28 +39,28 @@ function initControls() {
     var dim2 = document.getElementById('grid-dim-2');
     var sampleInterval = document.getElementById('sample-interval');
 
-    dim1.addEventListener('change', function(evt){
+    dim1.addEventListener('change', function (evt) {
         var value1 = evt.target.value;
         var value2 = dim2.value;
         setGridDims(value1, value2);
-        if(release) {
+        if (release) {
             createSamples();
         }
     });
 
-    dim2.addEventListener('change', function(evt){
+    dim2.addEventListener('change', function (evt) {
         var value2 = evt.target.value;
         var value1 = dim1.value;
         setGridDims(value1, value2);
-        if(release) {
+        if (release) {
             createSamples();
         }
     });
 
-    sampleInterval.addEventListener('change', function(evt){
+    sampleInterval.addEventListener('change', function (evt) {
         var value = evt.target.value;
         samplingInterval = value * 1000;
-        if(sampleLoop) {
+        if (sampleLoop) {
             createSamples();
         }
     });
@@ -69,7 +71,7 @@ function initControls() {
 }
 
 function setGridDims(val1, val2) {
-    if(val1 > val2) {
+    if (val1 > val2) {
         largeGridDim = val1;
         smallGridDim = val2
     } else {
@@ -79,13 +81,13 @@ function setGridDims(val1, val2) {
 }
 
 function createSamples() {
-    console.log("Initialising sample, sampling at "+samplingInterval+" millis");
+    console.log("Initialising sample, sampling at " + samplingInterval + " millis");
 
     clearSamples();
 
     var clickPattern = getClickPattern(click, release);
     var grid = getSampleGrid(clickPattern);
-    sampleDiv.setAttribute('style', 'width:'+ (grid.totalWidth+ (grid.numColumns*8))+"px");
+    sampleDiv.setAttribute('style', 'width:' + (grid.totalWidth + (grid.numColumns * 8)) + "px");
     var sampleContexts = [];
     for (var i = 0; i < grid.numCells; i++) {
         var sampleCanvas = document.createElement('canvas');
@@ -97,15 +99,15 @@ function createSamples() {
 
     sampleLoop = setInterval(function () {
 
-        if(sample) {
+        if (sample) {
             sample = {
-                previous : sample.current,
-                current : [],
-                diff : []
+                previous: sample.current,
+                current: [],
+                diff: []
             };
         } else {
             sample = {
-                current : []
+                current: []
             };
         }
 
@@ -129,7 +131,7 @@ function createSamples() {
 
             sample.current.push(evaluateData(sampleData));
 
-            if(sample.previous) {
+            if (sample.previous) {
                 sample.diff.push(sample.current[i] - sample.previous[i]);
             }
             i++;
@@ -139,6 +141,7 @@ function createSamples() {
         // if diff number is positive cell pixels have become lighter
         // if diff number is negative cell pixels have become darker
         console.log(sample);
+        sampleToRequest(sample.diff);
 
     }, samplingInterval);
 
@@ -148,6 +151,7 @@ function evaluateData(data) {
     function add(a, b) {
         return a + b;
     }
+
     return data.data.reduce(add, 0);
 }
 
@@ -274,7 +278,7 @@ function mouseXY(eve) {
 
 function drawSquare() {
     // creating a square
-    if(startX && startY && endX && endY) {
+    if (startX && startY && endX && endY) {
 
 
         var w = endX - startX;
@@ -311,6 +315,17 @@ function handleSuccess(stream) {
 
 function handleError(error) {
     console.log('user media error: ', error);
+}
+
+function sampleToRequest(sampleArray) {
+    var JSONArray = [];
+    sampleArray.forEach(function (sample, index) {
+        if(Math.abs(sample) > STRIKE_THRESHOLD) {
+            JSONArray.push(index);
+        }
+    });
+    console.log(JSONArray);
+    request.post('http://192.168.1.2:5000/strike').json(JSONArray);
 }
 
 navigator.webkitGetUserMedia({audio: false, video: true}, handleSuccess, handleError);
