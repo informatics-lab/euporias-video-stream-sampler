@@ -1,6 +1,6 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const STRIKE_THRESHOLD = 100;
+const STRIKE_THRESHOLD = 5.0;
 
 var request = require('request');
 
@@ -140,7 +140,7 @@ function createSamples() {
         // we now have our complete sample data
         // if diff number is positive cell pixels have become lighter
         // if diff number is negative cell pixels have become darker
-        console.log(sample);
+        // console.log(sample.diff);
         sampleToRequest(sample.diff);
 
     }, samplingInterval);
@@ -152,7 +152,7 @@ function evaluateData(data) {
         return a + b;
     }
 
-    return data.data.reduce(add, 0);
+    return data.data.reduce(add, 0) / data.data.length;
 }
 
 function clearSamples() {
