@@ -1,6 +1,6 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const STRIKE_THRESHOLD = 100;
+const STRIKE_THRESHOLD = 5.0;
 
 var request = require('request');
 
@@ -111,7 +111,8 @@ function createSamples() {
             };
         }
 
-        sampleContexts.forEach(function (ctx,i) {
+        var i = 0;
+        sampleContexts.forEach(function (ctx) {
             ctx.clearRect(0, 0, grid.cellWidth, grid.cellHeight);
             ctx.drawImage(video,
                 grid.sampleCoordOrigins[i].x,
@@ -133,14 +134,15 @@ function createSamples() {
             if (sample.previous) {
                 sample.diff.push(sample.current[i] - sample.previous[i]);
             }
+            i++;
         });
 
         // we now have our complete sample data
         // if diff number is positive cell pixels have become lighter
         // if diff number is negative cell pixels have become darker
-        console.log("DIFF:\n",sample.diff);
         if(sample.diff) {
             sampleToRequest(sample.diff);
+            console.log("DIFF:\n",sample.diff);
         }
     }, samplingInterval);
 
@@ -151,7 +153,7 @@ function evaluateData(data) {
         return a + b;
     }
 
-    return data.data.reduce(add, 0);
+    return data.data.reduce(add, 0) / data.data.length;
 }
 
 function clearSamples() {
