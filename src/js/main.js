@@ -111,8 +111,7 @@ function createSamples() {
             };
         }
 
-        var i = 0;
-        sampleContexts.forEach(function (ctx) {
+        sampleContexts.forEach(function (ctx,i) {
             ctx.clearRect(0, 0, grid.cellWidth, grid.cellHeight);
             ctx.drawImage(video,
                 grid.sampleCoordOrigins[i].x,
@@ -134,15 +133,15 @@ function createSamples() {
             if (sample.previous) {
                 sample.diff.push(sample.current[i] - sample.previous[i]);
             }
-            i++;
         });
 
         // we now have our complete sample data
         // if diff number is positive cell pixels have become lighter
         // if diff number is negative cell pixels have become darker
-        console.log(sample);
-        sampleToRequest(sample.diff);
-
+        console.log("DIFF:\n",sample.diff);
+        if(sample.diff) {
+            sampleToRequest(sample.diff);
+        }
     }, samplingInterval);
 
 };
@@ -324,7 +323,6 @@ function sampleToRequest(sampleArray) {
             JSONArray.push(index);
         }
     });
-    console.log(JSONArray);
     request.post('http://192.168.1.2:5000/strike').json(JSONArray);
 }
 
