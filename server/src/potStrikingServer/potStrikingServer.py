@@ -3,10 +3,13 @@ import os
 import flask
 import time
 import sched
+import json
 from flask_cors import CORS, cross_origin
 import multiprocessing as mp
 from PotStriker import Hat
 from PotStriker import Servo
+
+#TODO recording key strings need to be double quoted
 
 app = flask.Flask(__name__)
 hats = []
@@ -27,6 +30,9 @@ def set_up(servo):
 def hello():
     return "pot striking server is running..."
 
+
+
+# STRIKING RESOURCES
 
 def strike_servos(servo_ids):
     servosToStrike = [servos[i] for i in servo_ids]
@@ -92,11 +98,12 @@ def record_stop():
 def get_record(record_filename):
     app.logger.debug("/record/{}".format(record_filename))
     records = os.listdir("./records")
+    fname = str(record_filename + ".json")
     for record in records:
-        if record_filename + ".json" == record:
+        if fname == record:
             with open("./records/"+record, 'r') as recording:
-                flask.Response(recording.read(), content_type='application/json')
-    err = "no record found with the filename [{}]".format(record_filename)
+                return flask.Response(recording.read(), content_type='application/json')
+    err = "no record found with the filename [{}.json]".format(record_filename)
     app.logger.debug(err)
     return page_not_found(err)
 
@@ -104,7 +111,7 @@ def get_record(record_filename):
 @app.route("/record/<record_filename>/play", methods=['GET'])
 def play_record(record_filename):
     app.logger.debug("/record/{}/play".format(record_filename))
-    with open("./records"+record_filename, 'r') as recording :
+    with open("./records/"+record_filename + ".json", 'r') as recording :
         record = json.load(recording)
         s = sched.scheduler(time.time, time.sleep)
         for strikeRequest in record.recording:
@@ -238,6 +245,7 @@ def servo_remove(servo_id):
             del servos[i]
             return flask.Response(get_servos(), content_type='application/json')
     return flask.Response(get_servos(), 400, content_type='application/json')
+
 
 
 # ERROR HANDLING
