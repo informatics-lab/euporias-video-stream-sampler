@@ -1,6 +1,5 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const STRIKE_THRESHOLD = 5.0;
 const BELL_SERVER = "http://192.168.1.2:5000";
 
 
@@ -9,6 +8,7 @@ var request = require('request');
 var largeGridDim, smallGridDim;
 var sampling = false;
 var recording = false;
+var threshold = 5;
 var samplingInterval, sampleLoop, sample, sampleDiv;
 var video, videoCanvas, videoCanvasCtx;
 
@@ -35,6 +35,7 @@ function initControls() {
     var dim1 = document.getElementById('grid-dim-1');
     var dim2 = document.getElementById('grid-dim-2');
     var sampleInterval = document.getElementById('sample-interval');
+    var sampleThreshold = document.getElementById('sample-threshold');
     var samplingButton = document.getElementById('sampling-button');
     var recordingButton = document.getElementById('record-button');
     
@@ -60,6 +61,14 @@ function initControls() {
         var value = evt.target.value;
         samplingInterval = value * 1000;
         if (sampling) {
+            createSamples();
+        }
+    });
+
+    sampleThreshold.addEventListener('change', function(evt){
+        var value = evt.target.value;
+        threshold = value;
+        if(sampling) {
             createSamples();
         }
     });
@@ -275,7 +284,7 @@ function handleError(error) {
 function sampleToRequest(sampleArray) {
     var JSONArray = [];
     sampleArray.forEach(function (sample, index) {
-        if(Math.abs(sample) > STRIKE_THRESHOLD) {
+        if(Math.abs(sample) > threshold) {
             JSONArray.push(index);
         }
     });
