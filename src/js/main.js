@@ -1,11 +1,14 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
 const STRIKE_THRESHOLD = 5.0;
+const BELL_SERVER = "http://192.168.1.2:5000";
+
 
 var request = require('request');
 
 var largeGridDim, smallGridDim;
 var sampling = false;
+var recording = false;
 var samplingInterval, sampleLoop, sample, sampleDiv;
 var video, videoCanvas, videoCanvasCtx;
 
@@ -33,6 +36,7 @@ function initControls() {
     var dim2 = document.getElementById('grid-dim-2');
     var sampleInterval = document.getElementById('sample-interval');
     var samplingButton = document.getElementById('sampling-button');
+    var recordingButton = document.getElementById('record-button');
     
     dim1.addEventListener('change', function (evt) {
         var value1 = evt.target.value;
@@ -64,15 +68,37 @@ function initControls() {
         if(!sampling) {
             sampling = true;
             createSamples();
-            samplingButton.innerHTML = "Stop Sampling";
+            samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Stop Sampling";
             samplingButton.style.backgroundColor = "#aa4b46";
         } else {
             sampling = false;
             clearSamples();
-            samplingButton.innerHTML = "Start Sampling";
+            samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Start Sampling";
             samplingButton.style.backgroundColor = "#66aa5d";
 
         }
+    });
+
+    recordingButton.addEventListener('click', function(evt) {
+       if(!recording) {
+           var recordName = prompt("Please enter a name for this recording");
+           request
+               .post(BELL_SERVER+'/record')
+               .json({record_filename: recordName})
+               .on('response', function(response) {
+                   alert("Now Recording...");
+                   recording = true;
+                   recordingButton.innerHTML = "<i class=\"fa fa-stop-circle\" aria-hidden=\"true\"></i> Stop Recording";
+               });
+       } else {
+           request
+               .get(BELL_SERVER+'/record/stop')
+               .on('response', function(response) {
+                    alert("Recording Stopped");
+                    recording = false;
+                   recordingButton.innerHTML = "<i class=\"fa fa-play-circle\" aria-hidden=\"true\"></i> Start Recording";
+                });
+       }
     });
 
     sampleDiv = document.getElementById('samples');
@@ -253,7 +279,7 @@ function sampleToRequest(sampleArray) {
             JSONArray.push(index);
         }
     });
-    request.post('http://192.168.1.2:5000/strike').json(JSONArray);
+    request.post(BELL_SERVER+'/strike').json(JSONArray);
 }
 
 navigator.webkitGetUserMedia({audio: false, video: true}, handleSuccess, handleError);
