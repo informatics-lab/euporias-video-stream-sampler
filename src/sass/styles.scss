@@ -34,6 +34,15 @@ body {
     input {
       color:$backgorund-color;
     }
+
+    #sampling-button {
+      padding:10px 5px;
+      margin-left:20px;
+      color: #FFF;
+      background-color: #66aa5d;
+      border-radius: 5px;
+    }
+
   }
 
   #videoCanvas {
@@ -48,7 +57,7 @@ body {
     canvas {
       border: 1px solid whitesmoke;
       padding: 0;
-      margin: 3px;
+      margin: 1px;
     }
   }
 
