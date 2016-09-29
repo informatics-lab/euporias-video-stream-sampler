@@ -88,7 +88,7 @@ def record_stop():
     app.logger.debug("/record/stop ")
     global recordDict
     if recordDict is not None:
-        with open(recordDict["name"], "w") as recordFile:
+        with open(recordDict["filename"], "w") as recordFile:
             recordFile.write(json.dumps(recordDict))
         recordDict = None
         return flask.Response("stopped recording")
