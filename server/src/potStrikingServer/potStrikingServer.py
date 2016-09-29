@@ -69,12 +69,15 @@ def record_list():
 # initialises a new log file where all future '/strike' requests will be logged
 @app.route("/record", methods=['POST'])
 def record_start():
-    global recordDict
     app.logger.debug("/record :\n{}".format(flask.request.json))
+    global recordDict
     recordRequest = flask.request.json
     recordFilename = "./records/" + recordRequest['record_filename'] + ".json"
     if recordDict is None:
-        recordDict = {"name": recordFilename, "time": time.time(), "recording": []}
+        recordDict = {"link": "/record/{}".format(recordRequest['record_filename']),
+                      "filename": recordFilename,
+                      "time": time.time(),
+                      "recording": []}
         return flask.Response("pot striking server is now recording to [{}]...".format(recordFilename), 201)
     else:
         return flask.Response("pot striking server is already recording", 400)
@@ -82,6 +85,7 @@ def record_start():
 # stops the current recording
 @app.route("/record/stop", methods=['GET'])
 def record_stop():
+    app.logger.debug("/record/stop ")
     global recordDict
     if recordDict is not None:
         with open(recordDict["name"], "w") as recordFile:

@@ -1,6 +1,6 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const BELL_SERVER = "http://192.168.1.2:5000";
+const BELL_SERVER = "http://192.168.1.83:5000";
 
 
 var request = require('request');
@@ -288,7 +288,9 @@ function sampleToRequest(sampleArray) {
             JSONArray.push(index);
         }
     });
-    request.post(BELL_SERVER+'/strike').json(JSONArray);
+    if(JSONArray.length > 0) {
+        request.post(BELL_SERVER + '/strike').json(JSONArray);
+    }
 }
 
 navigator.webkitGetUserMedia({audio: false, video: true}, handleSuccess, handleError);
