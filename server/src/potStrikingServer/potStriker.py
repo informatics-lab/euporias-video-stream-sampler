@@ -64,7 +64,7 @@ class Servo(object):
         return json.dumps(self.to_dict())
 
     def __repr__(self):
-        return str(self.to_dict())
+        return self.to_dict()
 
 class Hat(object):
 
@@ -95,4 +95,4 @@ class Hat(object):
         return json.dumps(self.to_dict())
 
     def __repr__(self):
-        return str(self.to_dict())
+        return self.to_dict()

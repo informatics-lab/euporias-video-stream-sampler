@@ -9,13 +9,10 @@ import multiprocessing as mp
 from PotStriker import Hat
 from PotStriker import Servo
 
-#TODO recording key strings need to be double quoted
-
 app = flask.Flask(__name__)
 hats = []
 servos = []
-recordFile = None
-
+recordDict = None
 
 # methods required for multiprocessing behaviour
 def trigger(servo):
@@ -46,11 +43,11 @@ def strike_servos(servo_ids):
 def strike():
     app.logger.debug("/strike :\n{}".format(flask.request.json))
     strikeArray = flask.request.json
-    global recordFile
-    if recordFile is not None:
+    global recordDict
+    if recordDict is not None:
         strikeRecord = { "time": time.time(), "strike": strikeArray }
         app.logger.debug("recording : {}".format(strikeRecord))
-        recordFile.write("\n\t{},".format(strikeRecord))
+        recordDict["recording"].append(strikeRecord)
     strike_servos(strikeArray)
     return "striking pots..."
 
@@ -61,34 +58,35 @@ def strike():
 def get_records():
     records = os.listdir("./records")
     recordResponse = { "records" : records }
-    return str(recordResponse)
+    return recordResponse
 
 # lists all existing records
 @app.route("/records", methods=['GET'])
 def record_list():
-    return flask.Response(get_records(), content_type='application/json')
+    app.logger.debug("/records")
+    return flask.Response(json.dumps(get_records()), content_type='application/json')
 
 # initialises a new log file where all future '/strike' requests will be logged
 @app.route("/record", methods=['POST'])
 def record_start():
-    global recordFile
+    global recordDict
     app.logger.debug("/record :\n{}".format(flask.request.json))
     recordRequest = flask.request.json
     recordFilename = "./records/" + recordRequest['record_filename'] + ".json"
-    recordFile = open(recordFilename,'w')
-    recordFile.write("{ 'time': "+str(time.time())+", 'recording': [")
-    return flask.Response("pot striking server is now recording to file [{}]...".format(recordFilename), 201)
+    if recordDict is None:
+        recordDict = {"name": recordFilename, "time": time.time(), "recording": []}
+        return flask.Response("pot striking server is now recording to [{}]...".format(recordFilename), 201)
+    else:
+        return flask.Response("pot striking server is already recording", 400)
 
 # stops the current recording
 @app.route("/record/stop", methods=['GET'])
 def record_stop():
-    global recordFile
-    if recordFile is not None:
-        recordFile.seek(-1, os.SEEK_END)
-        recordFile.truncate()
-        recordFile.write("\n]}")
-        recordFile.close()
-        recordFile = None
+    global recordDict
+    if recordDict is not None:
+        with open(recordDict["name"], "w") as recordFile:
+            recordFile.write(json.dumps(recordDict))
+        recordDict = None
         return flask.Response("stopped recording")
     else:
         return flask.Response("no record file currently instantiated", 400)
@@ -114,9 +112,9 @@ def play_record(record_filename):
     with open("./records/"+record_filename + ".json", 'r') as recording :
         record = json.load(recording)
         s = sched.scheduler(time.time, time.sleep)
-        for strikeRequest in record.recording:
-            timeOffset = strikeRequest.time - record.time
-            s.enter(timeOffset, 1, strike_servos, strikeRequest.strike)
+        for strikeRequest in record["recording"]:
+            timeOffset = strikeRequest["time"] - record["time"]
+            s.enter(timeOffset, 1, strike_servos, (strikeRequest["strike"],))
         s.run()
     return "playing back {} to strike pots...".format(record_filename)
 
@@ -126,20 +124,15 @@ def play_record(record_filename):
 
 def get_hats():
     global hats
-    hatsStr = '{"hats": ['
-    for hat in hats:
-        hatsStr += '\n\t' + hat.to_JSON()
-        hatsStr += ','
-    if hats:
-        hatsStr = hatsStr[:-1]
-    hatsStr += '\n] }'
-    return hatsStr
+    h = [hat.to_dict() for hat in hats]
+
+    return {"hats": h}
 
 # returns list of currently configured servo hats
 @app.route("/conf/hats", methods=['GET'])
 def hat_list():
     app.logger.debug("/conf/hats")
-    return flask.Response(get_hats(), content_type='application/json')
+    return flask.Response(json.dumps(get_hats()), content_type='application/json')
 
 # adds a new servo hat
 @app.route("/conf/hat", methods=['POST'])
@@ -151,11 +144,11 @@ def hat_add():
     hatAddr = hatRequest['address']
     for hat in hats:
         if hat.id == hatId or hat.addressStr == hatAddr:
-            return flask.Response(get_hats(), 400, content_type='application/json')
+            return flask.Response(json.dumps(get_hats()), 400, content_type='application/json')
 
     h = Hat(hatRequest['id'], int(hatRequest['address'],16))
     hats.append(h)
-    return flask.Response(get_hats(), 201, content_type='application/json')
+    return flask.Response(json.dumps(get_hats()), 201, content_type='application/json')
 
 # gets an individual servo hat
 @app.route("/conf/hat/<hat_id>", methods=['GET'])
@@ -164,7 +157,7 @@ def get_hat(hat_id):
     global hats
     for hat in hats:
         if hat.id == int(hat_id):
-            return flask.Response(str(hat.to_JSON()), content_type='application/json')
+            return flask.Response(json.dumps(hat.to_JSON()), content_type='application/json')
     err = "no hat found with the id [{}]".format(hat_id)
     app.logger.debug(err)
     return page_not_found(err)
@@ -177,25 +170,19 @@ def hat_remove(hat_id):
     for i,hat in enumerate(hats):
         if hat.id == int(hat_id):
             del hats[i]
-            return flask.Response(get_hats(), content_type='application/json')
-    return flask.Response(get_hats(), 400, content_type='application/json')
+            return flask.Response(json.dumps(get_hats()), content_type='application/json')
+    return flask.Response(json.dumps(get_hats()), 400, content_type='application/json')
 
 def get_servos():
     global servos
-    servosStr = '{"servos": ['
-    for servo in servos:
-        servosStr += '\n\t' + servo.to_JSON()
-        servosStr += ','
-    if servos:
-        servosStr = servosStr[:-1]
-    servosStr += '\n] }'
-    return servosStr
+    s = [servo.to_dict() for servo in servos]
+    return {"servos": s}
 
 # returns current servo configuration
 @app.route("/conf/servos", methods=['GET'])
 def servo_list():
     app.logger.debug("/conf/servos")
-    return flask.Response(get_servos(), content_type='application/json')
+    return flask.Response(json.dumps(get_servos()), content_type='application/json')
 
 # adds a new servo to the current configuration
 @app.route("/conf/servo", methods=['POST'])
@@ -212,16 +199,16 @@ def servo_add():
 
     for servo in servos:
         if servo.id == servoId or (hatId == servo.hat.id and channel == servo.channel):
-            return flask.Response(get_servos(), 400, content_type='application/json')
+            return flask.Response(json.dumps(get_servos()), 400, content_type='application/json')
 
     for hat in hats:
         if hatId == hat.id:
             s = Servo(hatId, hat, channel, initDeg, rotateToDeg)
             s.initServo()
             servos.append(s)
-            return flask.Response(get_servos(), 201, content_type='application/json')
+            return flask.Response(json.dumps(get_servos()), 201, content_type='application/json')
 
-    return flask.Response(get_hats(), 400, content_type='application/json')
+    return flask.Response(json.dumps(get_hats()), 400, content_type='application/json')
 
 # gets an individual servo
 @app.route("/conf/servo/<servo_id>", methods=['GET'])
@@ -230,7 +217,7 @@ def get_servo(servo_id):
     global servos
     for servo in servos:
         if servo.id == int(servo_id):
-            return flask.Response(str(servo.to_JSON()), content_type='application/json')
+            return flask.Response(json.dumps(servo.to_JSON()), content_type='application/json')
     err = "no servo found with the id [{}]".format(servo_id)
     app.logger.debug(err)
     return page_not_found(err)
@@ -243,8 +230,8 @@ def servo_remove(servo_id):
     for i,servo in enumerate(servos):
         if servo.id == int(servo_id):
             del servos[i]
-            return flask.Response(get_servos(), content_type='application/json')
-    return flask.Response(get_servos(), 400, content_type='application/json')
+            return flask.Response(json.dumps(get_servos()), content_type='application/json')
+    return flask.Response(json.dumps(get_servos()), 400, content_type='application/json')
 
 
 
