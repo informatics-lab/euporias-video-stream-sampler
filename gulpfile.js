@@ -63,7 +63,12 @@ gulp.task('build:css', function () {
         .pipe(gulp.dest(BUILD_DEST + '/css'));
 });
 
-gulp.task('build', ['build:html', 'build:css', 'build:js']);
+gulp.task('build:images', function () {
+    return gulp.src('./src/images/*')
+        .pipe(gulp.dest(BUILD_DEST + '/images'));
+});
+
+gulp.task('build', ['build:html', 'build:css', 'build:js', 'build:images']);
 
 
 //SERVE
