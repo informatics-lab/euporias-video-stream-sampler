@@ -157,7 +157,7 @@ def get_hat(hat_id):
     global hats
     for hat in hats:
         if hat.id == int(hat_id):
-            return flask.Response(json.dumps(hat.to_JSON()), content_type='application/json')
+            return flask.Response(hat.to_JSON(), content_type='application/json')
     err = "no hat found with the id [{}]".format(hat_id)
     app.logger.debug(err)
     return page_not_found(err)
@@ -217,7 +217,7 @@ def get_servo(servo_id):
     global servos
     for servo in servos:
         if servo.id == int(servo_id):
-            return flask.Response(json.dumps(servo.to_JSON()), content_type='application/json')
+            return flask.Response(servo.to_JSON(), content_type='application/json')
     err = "no servo found with the id [{}]".format(servo_id)
     app.logger.debug(err)
     return page_not_found(err)
