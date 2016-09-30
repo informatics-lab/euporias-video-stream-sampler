@@ -1,5 +1,5 @@
 # euporias-pot-striking-server
-JSON Web Server application, interfaces with RPi hardware to strike the pots.
+Python Web Server application, interfaces with RPi hardware / hats / servos to strike the #BellHouse pots.
 
 ##installation
 see https://github.com/adafruit/Adafruit_Python_PCA9685
