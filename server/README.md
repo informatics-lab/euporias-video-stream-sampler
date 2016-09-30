@@ -2,10 +2,10 @@
 Python Web Server application, interfaces with RPi hardware / hats / servos to strike the #BellHouse pots.
 
 ##installation
-see https://github.com/adafruit/Adafruit_Python_PCA9685
-`sudo pip install Flask` 
-`sudo pip install adafruit-pca9685`
-`sudo pip install flask-cors`
+see https://github.com/adafruit/Adafruit_Python_PCA9685  
+`sudo pip install Flask`  
+`sudo pip install adafruit-pca9685`  
+`sudo pip install flask-cors`  
 
 ##running
 `python server.py`  
