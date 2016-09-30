@@ -95,7 +95,7 @@ function initControls() {
        if(!recording) {
            var recordName = prompt("Please enter a name for this recording");
            request
-               .post(BELL_SERVER+'/record')
+               .post(BELL_SERVER+'/recording')
                .json({record_filename: recordName})
                .on('response', function(response) {
                    alert("Now Recording...");
@@ -104,7 +104,7 @@ function initControls() {
                });
        } else {
            request
-               .get(BELL_SERVER+'/record/stop')
+               .get(BELL_SERVER+'/recording/stop')
                .on('response', function(response) {
                     alert("Recording Stopped");
                     recording = false;
