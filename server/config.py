@@ -8,7 +8,7 @@ import httplib
 def make_request(conn, method, url, headers, body):
     conn.request(method, url, json.dumps(body), headers)
     response = connection.getresponse()
-    if not response.status[0] == 2:
+    if not str(response.status)[0] == 2:
         print >> sys.stderr, "{} error making request:\nHeaders:\n{}\nBody:\n{}\n\nError message:\n{}\n"\
             .format(response.status, headers, body, response.reason)
 

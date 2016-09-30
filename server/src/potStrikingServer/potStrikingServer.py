@@ -90,7 +90,8 @@ def recording_stop():
 
 # RECORDING RESOURCES
 def get_records():
-    records = os.listdir("./records")
+    # strip .json from filenames
+    records = [r[:-5] for r in os.listdir("./records")]
     recordResponse = {"records": records}
     return recordResponse
 
