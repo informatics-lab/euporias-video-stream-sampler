@@ -36,7 +36,7 @@ def hello():
 
 # STRIKING RESOURCES
 def strike_servos(servo_ids):
-    servosToStrike = [servos[i] for i in servo_ids]
+    servosToStrike = [servo for servo in servos if servo["id"] in servo_ids]
     for servo in servosToStrike:
         p = mp.Process(target=trigger, args=(servo,))
         p.start()
