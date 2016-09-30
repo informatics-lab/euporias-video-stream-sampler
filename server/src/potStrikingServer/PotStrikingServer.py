@@ -36,12 +36,14 @@ def hello():
 
 # STRIKING RESOURCES
 def strike_servos(servo_ids):
+    p = None
     servosToStrike = [servo for servo in servos if servo.id in servo_ids]
     for servo in servosToStrike:
-        p = mp.Process(target=trigger, args=(servo,))
-        p.start()
-    p.join()
-
+        if not servo.striking:
+            p = mp.Process(target=trigger, args=(servo,))
+            p.start()
+    if p:
+        p.join()
 
 # strikes the pots
 @app.route("/strike", methods=['POST'])
