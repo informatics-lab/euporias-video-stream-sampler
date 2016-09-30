@@ -1,0 +1,51 @@
+{
+  "configuration": [
+    {
+      "method": "POST",
+      "url": "/hats",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 0,
+        "address": "0x40"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/hats",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 1,
+        "address": "0x41"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/hats",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 2,
+        "address": "0x42"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 0,
+        "hat": 0,
+        "channel": 0,
+        "init_deg": -45,
+        "rotate_to_deg": 50
+      }
+    }
+  ]
+}
