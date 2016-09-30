@@ -238,7 +238,7 @@ def servo_add():
 
     for hat in hats:
         if hatId == hat.id:
-            s = Servo(hatId, hat, channel, initDeg, rotateToDeg)
+            s = Servo(servoId, hat, channel, initDeg, rotateToDeg)
             s.initServo()
             servos.append(s)
             return flask.Response(json.dumps(get_servos()), 201, content_type='application/json')
