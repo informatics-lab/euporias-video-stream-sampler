@@ -8,6 +8,7 @@ var request = require('request');
 var largeGridDim, smallGridDim;
 var sampling = false;
 var recording = false;
+var playing = false;
 var threshold = 5;
 var samplingInterval, sampleLoop, sample, sampleDiv;
 var video, videoCanvas, videoCanvasCtx;
@@ -114,10 +115,23 @@ function initControls() {
     });
 
     playRecordingButton.addEventListener('click', function(evt) {
-        var record = document.getElementById('records-list').value;
-        request
-            .get(BELL_SERVER+'/record/'+record+'/play')
-    })
+        if(!playing) {
+            var record = document.getElementById('records-list').value;
+            request
+                .get(BELL_SERVER+'/records/'+record.replace('.json', '')+'/play')
+                .on('response', function(response) {
+                    playRecordingButton.innerHTML = "<i class=\"fa fa-stop-circle\" aria-hidden=\"true\"></i>";
+                    playing = true;
+                });
+        } else {
+            request
+                .get(BELL_SERVER+'/records/stop')
+                .on('response', function(response) {
+                     playRecordingButton.innerHTML = "<i class=\"fa fa-play-circle\" aria-hidden=\"true\"></i>";
+                     playing = false;
+            });
+        }
+    });
 
     listRecordings();
     sampleDiv = document.getElementById('samples');
