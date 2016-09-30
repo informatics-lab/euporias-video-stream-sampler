@@ -10,6 +10,10 @@ see https://github.com/adafruit/Adafruit_Python_PCA9685
 ##running
 `python server.py`  
 
+##auto configuration
+Server can be configured automatically with included `configuration.json` file.  
+`python config.py`
+
 ##API
 Available route resources:  
  * GET      `/` : returns message if service is running.  
