@@ -40,11 +40,319 @@
         "Content-Type": "application/json"
       },
       "body": {
-        "id": 0,
+        "id": 1,
         "hat": 0,
+        "channel": 1,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 2,
+        "hat": 0,
+        "channel": 2,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 4,
+        "hat": 0,
+        "channel": 4,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 5,
+        "hat": 0,
+        "channel": 5,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 6,
+        "hat": 0,
+        "channel": 6,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 7,
+        "hat": 0,
+        "channel": 7,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 8,
+        "hat": 0,
+        "channel": 8,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 11,
+        "hat": 0,
+        "channel": 11,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 12,
+        "hat": 0,
+        "channel": 12,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 13,
+        "hat": 0,
+        "channel": 13,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 15,
+        "hat": 0,
+        "channel": 15,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 16,
+        "hat": 1,
         "channel": 0,
-        "init_deg": -45,
-        "rotate_to_deg": 50
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 17,
+        "hat": 1,
+        "channel": 1,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 20,
+        "hat": 1,
+        "channel": 4,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 21,
+        "hat": 1,
+        "channel": 5,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 23,
+        "hat": 1,
+        "channel": 7,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 24,
+        "hat": 1,
+        "channel": 8,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 25,
+        "hat": 1,
+        "channel": 9,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 28,
+        "hat": 1,
+        "channel": 12,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 29,
+        "hat": 1,
+        "channel": 13,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 31,
+        "hat": 1,
+        "channel": 15,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 33,
+        "hat": 2,
+        "channel": 1,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 0,
+        "hat": 2,
+        "channel": 2,
+        "init_deg": 0,
+        "rotate_to_deg": 45
       }
     }
   ]
