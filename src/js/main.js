@@ -116,7 +116,7 @@ function initControls() {
     playRecordingButton.addEventListener('click', function(evt) {
         var record = document.getElementById('records-list').value;
         request
-            .get(BELL_SERVER+'/record/'+record.replace('.json', '')+'/play')
+            .get(BELL_SERVER+'/record/'+record+'/play')
     })
 
     listRecordings();
