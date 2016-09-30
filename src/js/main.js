@@ -38,7 +38,9 @@ function initControls() {
     var sampleThreshold = document.getElementById('sample-threshold');
     var samplingButton = document.getElementById('sampling-button');
     var recordingButton = document.getElementById('record-button');
-    
+    var playRecordingButton = document.getElementById('play-record-button')
+
+
     dim1.addEventListener('change', function (evt) {
         var value1 = evt.target.value;
         var value2 = dim2.value;
@@ -107,9 +109,17 @@ function initControls() {
                     recording = false;
                    recordingButton.innerHTML = "<i class=\"fa fa-play-circle\" aria-hidden=\"true\"></i> Start Recording";
                 });
+                listRecordings();
        }
     });
 
+    playRecordingButton.addEventListener('click', function(evt) {
+        var record = document.getElementById('records-list').value;
+        request
+            .get(BELL_SERVER+'/record/'+record.replace('.json', '')+'/play')
+    })
+
+    listRecordings();
     sampleDiv = document.getElementById('samples');
     setGridDims(dim1.value, dim2.value);
     samplingInterval = sampleInterval.value * 1000;
@@ -292,5 +302,22 @@ function sampleToRequest(sampleArray) {
         request.post(BELL_SERVER + '/strike').json(JSONArray);
     }
 }
+
+function listRecordings() {
+    request(BELL_SERVER+'/records', function(error, response, body) {
+        var recordSelector = document.getElementById('records-list');
+        while (recordSelector.firstChild) {
+            recordSelector.removeChild(recordSelector.firstChild)
+        }
+        var records = JSON.parse(body).records;
+            records.forEach(function(record) {
+                var option = document.createElement('option');
+                option.value = record;
+                option.innerHTML = record;
+                recordSelector.appendChild(option);
+            });
+    });
+};
+
 
 navigator.webkitGetUserMedia({audio: false, video: true}, handleSuccess, handleError);
