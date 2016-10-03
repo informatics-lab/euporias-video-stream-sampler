@@ -320,6 +320,20 @@
         "Content-Type": "application/json"
       },
       "body": {
+        "id": 30,
+        "hat": 1,
+        "channel": 14,
+        "init_deg": 0,
+        "rotate_to_deg": 55
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
         "id": 31,
         "hat": 1,
         "channel": 15,
