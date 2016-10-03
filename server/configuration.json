@@ -268,7 +268,21 @@
         "hat": 1,
         "channel": 2,
         "init_deg": 0,
-        "rotate_to_deg": 46
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 19,
+        "hat": 1,
+        "channel": 3,
+        "init_deg": 0,
+        "rotate_to_deg": 45
       }
     },
     {
@@ -296,7 +310,7 @@
         "hat": 1,
         "channel": 5,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 38
       }
     },
     {
