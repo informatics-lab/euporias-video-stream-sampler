@@ -222,6 +222,34 @@
         "Content-Type": "application/json"
       },
       "body": {
+        "id": 18,
+        "hat": 1,
+        "channel": 2,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 19,
+        "hat": 1,
+        "channel": 3,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
         "id": 20,
         "hat": 1,
         "channel": 4,
@@ -240,7 +268,7 @@
         "hat": 1,
         "channel": 5,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 38
       }
     },
     {
