@@ -68,11 +68,25 @@
         "Content-Type": "application/json"
       },
       "body": {
+        "id": 3,
+        "hat": 0,
+        "channel": 3,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
         "id": 4,
         "hat": 0,
         "channel": 4,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 42
       }
     },
     {
@@ -100,7 +114,7 @@
         "hat": 0,
         "channel": 6,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 55
       }
     },
     {
@@ -114,7 +128,7 @@
         "hat": 0,
         "channel": 7,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 49
       }
     },
     {
@@ -127,6 +141,20 @@
         "id": 8,
         "hat": 0,
         "channel": 8,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 10,
+        "hat": 0,
+        "channel": 10,
         "init_deg": 0,
         "rotate_to_deg": 45
       }
@@ -169,6 +197,20 @@
         "id": 13,
         "hat": 0,
         "channel": 13,
+        "init_deg": 0,
+        "rotate_to_deg": 40
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 14,
+        "hat": 0,
+        "channel": 14,
         "init_deg": 0,
         "rotate_to_deg": 45
       }
@@ -222,6 +264,20 @@
         "Content-Type": "application/json"
       },
       "body": {
+        "id": 18,
+        "hat": 1,
+        "channel": 2,
+        "init_deg": 0,
+        "rotate_to_deg": 46
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
         "id": 20,
         "hat": 1,
         "channel": 4,
@@ -239,6 +295,20 @@
         "id": 21,
         "hat": 1,
         "channel": 5,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 22,
+        "hat": 1,
+        "channel": 6,
         "init_deg": 0,
         "rotate_to_deg": 45
       }
@@ -296,6 +366,20 @@
         "hat": 1,
         "channel": 10,
         "init_deg": 0,
+        "rotate_to_deg": 38
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 27,
+        "hat": 1,
+        "channel": 11,
+        "init_deg": 0,
         "rotate_to_deg": 40
       }
     },
@@ -351,6 +435,20 @@
         "id": 31,
         "hat": 1,
         "channel": 15,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 32,
+        "hat": 2,
+        "channel": 0,
         "init_deg": 0,
         "rotate_to_deg": 45
       }
