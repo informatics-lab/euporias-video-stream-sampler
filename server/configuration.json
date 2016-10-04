@@ -152,6 +152,20 @@
         "Content-Type": "application/json"
       },
       "body": {
+        "id": 9,
+        "hat": 2,
+        "channel": 3,
+        "init_deg": 0,
+        "rotate_to_deg": 45
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/servos",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
         "id": 10,
         "hat": 0,
         "channel": 10,
@@ -209,8 +223,8 @@
       },
       "body": {
         "id": 14,
-        "hat": 0,
-        "channel": 14,
+        "hat": 2,
+        "channel": 4,
         "init_deg": 0,
         "rotate_to_deg": 45
       }
@@ -450,7 +464,7 @@
         "hat": 1,
         "channel": 15,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 50
       }
     },
     {
@@ -478,7 +492,7 @@
         "hat": 2,
         "channel": 1,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 52
       }
     },
     {
