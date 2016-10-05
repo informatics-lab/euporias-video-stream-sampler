@@ -145,7 +145,7 @@ def stop_record():
     app.logger.debug("/records/stop")
     global scheduler
     if scheduler is not None:
-        for event in scheduler.queue():
+        for event in scheduler.queue:
             scheduler.cancel(event)
         scheduler = None
         return "playback stopped"
