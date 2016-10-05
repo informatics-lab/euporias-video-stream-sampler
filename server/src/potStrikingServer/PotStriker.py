@@ -27,7 +27,6 @@ class Servo(object):
         self.init_deg=init_deg
         self.rotate_to_deg=rotate_to_deg
         self.initPosPulseWidth = self.degToPulseWidth(init_deg)
-        self.deflectToPosPulseWidth = self.degToPulseWidth(rotate_to_deg - 20)
         self.rotateToPosPulseWidth = self.degToPulseWidth(rotate_to_deg)
         self.rotateTime = self.timeToRotate(init_deg, rotate_to_deg)
         self.striking = False
@@ -50,9 +49,8 @@ class Servo(object):
         self.striking = True
         self.hat.pwm.set_pwm(self.channel, 0, self.rotateToPosPulseWidth)
         time.sleep(self.rotateTime)
-        self.hat.pwm.set_pwm(self.channel, 0, self.deflectToPosPulseWidth)
-        time.sleep(1)
         self.hat.pwm.set_pwm(self.channel, 0, self.initPosPulseWidth)
+        time.sleep(self.rotateTime)
         self.striking = False
 
     def to_dict(self):
