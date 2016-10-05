@@ -226,7 +226,7 @@
         "hat": 2,
         "channel": 4,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 53
       }
     },
     {
@@ -282,7 +282,7 @@
         "hat": 1,
         "channel": 2,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 48
       }
     },
     {
@@ -324,7 +324,7 @@
         "hat": 1,
         "channel": 5,
         "init_deg": 0,
-        "rotate_to_deg": 38
+        "rotate_to_deg": 40
       }
     },
     {
@@ -352,7 +352,7 @@
         "hat": 1,
         "channel": 7,
         "init_deg": 0,
-        "rotate_to_deg": 45
+        "rotate_to_deg": 48
       }
     },
     {
