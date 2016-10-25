@@ -14,7 +14,28 @@
     </div>
     <div class="pure-u-1-2">
         <div>
-        <button class="pure-button pure-button-primary" id="record-button" type="button"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Recording</button>
+            <form id="sampling-input-form">
+                <input type="radio" id="webcam-sampling-input" name="sampling_input" checked="True" value="Webcam" /> Webcam
+                <input type="radio" id="video-sampling-input" name="sampling_input" value="Video" /> Video
+                <select id="video-input">
+                    <option value="./images/antarctica_2013.mp4">Surface weather around Antarctica, 2013-4</option>
+                    <option value="./images/summer_of_76.mp4">The summer of ‘76</option>
+                    <option value="./images/antarctica_1909.mp4">Antarctic weather 1909-10</option>
+                    <option value="./images/satellites.mp4">Satellites</option>
+                    <option value="./images/anomalies.mov">250 Years of UK Temperature/Precipitation Anomalies</option>
+                    <option value="./images/cyclone_lothar.mp4">European Winter Cyclone (Lothar)</option>
+                    <option value="./images/cyclone.mp4">European Winter Cyclone (Unknown)</option>
+                    <option value="./videos/bouyant_flow_03.mp4">Bouyant Flow 03</option>
+                    <option value="./videos/bouyant_flow_08.mp4">Bouyant Flow 08</option>
+                    <option value="./videos/bouyant_flow_13.mp4">Bouyant Flow 13</option>
+                    <option value="./videos/volcanic_plume.mp4">Volcanic Plume</option>
+                    <option value="./videos/space_weather.mp4">Space Weather (Mercury)</option>
+                </select>
+            </form>
+        </div>
+        <br />
+        <div>
+            <button class="pure-button pure-button-primary" id="record-button" type="button"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Recording</button>
         </div>
         <br />
         <div>
@@ -47,6 +68,7 @@
         <button id="sampling-button" type="button"><i class="fa fa-video-camera" aria-hidden="true"></i> Start Sampling</button>
     </form>
 </div>
+
 <div id="content" class="pure-g">
     <div class="pure-u-1-2">
         <canvas id="videoCanvas"></canvas>
@@ -55,6 +77,7 @@
         <div id="samples"></div>
     </div>
 </div>
+
 <div id="footer">
 
 </div>

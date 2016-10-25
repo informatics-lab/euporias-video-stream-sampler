@@ -1,6 +1,6 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const BELL_SERVER = "http://192.168.1.83:5000";
+const BELL_SERVER = "http://eae953b7.ngrok.io";
 
 
 var request = require('request');
@@ -39,8 +39,9 @@ function initControls() {
     var sampleThreshold = document.getElementById('sample-threshold');
     var samplingButton = document.getElementById('sampling-button');
     var recordingButton = document.getElementById('record-button');
-    var playRecordingButton = document.getElementById('play-record-button')
-
+    var playRecordingButton = document.getElementById('play-record-button');
+    var samplingInputForm = document.getElementById('sampling-input-form');
+    var videoSource = document.getElementById('video-input');
 
     dim1.addEventListener('change', function (evt) {
         var value1 = evt.target.value;
@@ -130,6 +131,27 @@ function initControls() {
                      playRecordingButton.innerHTML = "<i class=\"fa fa-play-circle\" aria-hidden=\"true\"></i>";
                      playing = false;
             });
+        }
+    });
+
+    samplingInputForm.addEventListener('change', function(evt) {
+        var radios = samplingInputForm.getElementsByTagName('input');
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                if (radios[i].value == 'Webcam') {
+                    enable_webcam();
+                } else if (radios[i].value == 'Video') {
+                    video.crossorigin="anonymous";
+                    video.src = (videoSource.options[videoSource.selectedIndex].value);
+                    video.setAttribute('loop', '');
+                    video.load();
+                    video.play();
+                    video.onended = function() {
+                        this.load();
+                        this.play();
+                    }
+                }
+            }
         }
     });
 
