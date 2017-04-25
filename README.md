@@ -1,14 +1,18 @@
 # euporias-video-stream-sampler
 euporias - ceramic bell project - video stream sampler
 
-##installation
-`npm i -g gulp`  
+## installation
+(Use nvm to install / manage node versions)
+`nvm install stable'
+`npm i -g gulp`
+`cd <your git repo>/euporias-video-stream-sampler
 `npm install`
 
-##running
+## running
+`nvm use 7.9`
 `gulp serve`
 
-##usage
+## usage
 To start sampling click the large green 'Start Sampling' button.
 To stop sampling click the large red 'Stop Sampling' button.
 

@@ -4,6 +4,9 @@
   "description": "EUPORIAS - ceramic bell project - video stream sampler",
   "author": "tpowellmeto <thomas.powell@informaticslab.co.uk>",
   "main": "src/js/main.js",
+  "engines": {
+    "node": ">=7.9.0"
+  },
   "scripts": {},
   "license": "ISC",
   "dependencies": {
@@ -20,6 +23,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "minimatch": "^3.0.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
