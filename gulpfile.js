@@ -1,19 +1,18 @@
 'use strict';
 
-var gulp = require('gulp');
-
-var del = require('del');
-
-var htmlmin = require('gulp-htmlmin');
-var sass = require('gulp-sass');
-
-var sourcemaps = require('gulp-sourcemaps');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var uglify = require('gulp-uglify');
-var browserify = require('browserify');
-
-var browserSync = require('browser-sync').create();
+var gulp            = require('gulp'),
+    source          = require('vinyl-source-stream'),
+    rename          = require('gulp-rename'),
+    browserify      = require('browserify'),
+    glob            = require('glob'),
+    es              = require('event-stream'),
+    del             = require('del'),
+    htmlmin         = require('gulp-htmlmin'),
+    sass            = require('gulp-sass'),
+    sourcemaps      = require('gulp-sourcemaps'),
+    buffer          = require('vinyl-buffer'),
+    uglify          = require('gulp-uglify'),
+    browserSync     = require('browser-sync').create();
 
 const BUILD_DEST = "./build";
 
@@ -41,7 +40,32 @@ gulp.task('build:html', function () {
         .pipe(gulp.dest(BUILD_DEST));
 });
 
-gulp.task('build:js', function () {
+/*browserify and merge multiple js files together. See 
+https://fettblog.eu/gulp-browserify-multiple-bundles/ */
+gulp.task('build:js', function(done) {
+    glob('./src/js/**.js', function(err, files) {
+        if(err) done(err);
+
+        var tasks = files.map(function(entry) {
+            return browserify({ entries: [entry] })
+                .bundle()
+                .pipe(source(entry))
+                .pipe(rename({
+                    dirname : './',
+                    extname : '.min.js'
+                }))
+                .pipe(buffer())
+                .pipe(sourcemaps.init({loadMaps: true}))
+                // Add transformation tasks to the pipeline here.
+                .pipe(uglify())       //minify
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(BUILD_DEST+'/js/'));
+            });
+        es.merge(tasks).on('end', done);
+    })
+});
+
+/*gulp.task('build:js', function () {
     // set up the browserify instance on a task basis
     var b = browserify({
         entries: './src/js/main.js'
@@ -55,7 +79,7 @@ gulp.task('build:js', function () {
         .pipe(uglify())       //minify
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(BUILD_DEST+'/js/'));
-});
+});*/
 
 gulp.task('build:css', function () {
     return gulp.src('./src/sass/*')

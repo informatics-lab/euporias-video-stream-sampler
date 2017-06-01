@@ -4,6 +4,7 @@
   "description": "EUPORIAS - ceramic bell project - video stream sampler",
   "author": "tpowellmeto <thomas.powell@informaticslab.co.uk>",
   "main": "src/js/main.js",
+  "setup": "src/js/setup.js",
   "engines": {
     "node": ">=7.9.0"
   },
@@ -17,12 +18,16 @@
     "browser-sync": "^2.14.0",
     "browserify": "^13.1.0",
     "del": "^2.2.1",
+    "event-stream": "^3.3.4",
+    "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-htmlmin": "^2.0.0",
+    "gulp-rename": "1.2.2",
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "jquery": "^3.2.1",
     "minimatch": "^3.0.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"

@@ -13,8 +13,10 @@ var threshold = 5;
 var samplingInterval, sampleLoop, sample, sampleDiv;
 var video, videoCanvas, videoCanvasCtx;
 
+/*Setup event listeners for controls on homepage */
 initControls();
 initVideo();
+
 
 function initVideo() {
     video = document.createElement('video');
@@ -40,6 +42,7 @@ function initControls() {
     var samplingButton = document.getElementById('sampling-button');
     var recordingButton = document.getElementById('record-button');
     var playRecordingButton = document.getElementById('play-record-button')
+    var setupButton = document.getElementById('setup-button');
 
 
     dim1.addEventListener('change', function (evt) {
@@ -132,6 +135,11 @@ function initControls() {
             });
         }
     });
+
+    setupButton.addEventListener('click', function(evt) {
+       window.location.href="setup.html"
+    });
+
 
     listRecordings();
     sampleDiv = document.getElementById('samples');

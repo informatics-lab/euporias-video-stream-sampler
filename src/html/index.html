@@ -3,62 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>EUPORIAS :: Ceramic Bell Project :: Video Stream Sampler</title>
-    <script src="https://use.fontawesome.com/3c353addfa.js"></script>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <link type="text/css" rel="stylesheet" href="css/styles.css"/>
+    <script src="https://use.fontawesome.com/3c353addfa.js"></script>
 </head>
 <body>
-<div id="header" class="pure-g">
-    <div class="pure-u-1-2">
-        <img src="./images/bellhouse.png" class="pure-img"/>
-    </div>
-    <div class="pure-u-1-2">
-        <div>
-        <button class="pure-button pure-button-primary" id="record-button" type="button"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Recording</button>
+    <div id="header" class="pure-g">
+        <div class="pure-u-1-2">
+            <img src="./images/bellhouse.png" class="pure-img"/>
         </div>
-        <br />
-        <div>
-            <label>Play Recording:</label>
+        <div class="pure-u-1-2">
+            <div>
+            <button class="pure-button pure-button-primary" id="record-button" type="button"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Recording</button>
             </div>
-        <div>
-            <form class="pure-form">
-            <fieldset>
-                <select id="records-list"></select>
-                <button class="pure-button" id="play-record-button" type="button"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
-            </fieldset>
+            <br />
+            <div>
+                <label>Play Recording:</label>
+                </div>
+            <div>
+                <form class="pure-form">
+                <fieldset>
+                    <select id="records-list"></select>
+                    <button class="pure-button" id="play-record-button" type="button"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
+                </fieldset>
+            </form>
+                </div>
+        </div>
+    </div>
+    <div id="controls" class="pure-g">
+        <form class="pure-form pure-u-1-1">
+            <label><i class="fa fa-th" aria-hidden="true"></i> Sample grid size
+                <input id="grid-dim-1" type="number" value="8" min="1" max="10"/>
+                x
+                <input id="grid-dim-2" type="number" value="6" min="1" max="10"/>
+            </label>
+            <label><i class="fa fa-clock-o" aria-hidden="true"></i> Sampling interval
+                <input id="sample-interval" type="number" step="any" value="3" min="0.1" max="10"/>
+                seconds
+            </label>
+            <label><i class="fa fa-cog" aria-hidden="true"></i> Sampling threshold
+                <input id="sample-threshold" type="number" step="any" value="5" min="0" max="50"/>
+            </label>
+            <button id="sampling-button" type="button"><i class="fa fa-video-camera" aria-hidden="true"></i> Start Sampling</button>
+            <button id="setup-button" type="button"><i class="fa fa-cog" aria-hidden="true"></i> Setup</button>
         </form>
-            </div>
     </div>
-</div>
-<div id="controls" class="pure-g">
-    <form class="pure-form pure-u-1-1">
-        <label><i class="fa fa-th" aria-hidden="true"></i> Sample grid size
-            <input id="grid-dim-1" type="number" value="8" min="1" max="10"/>
-            x
-            <input id="grid-dim-2" type="number" value="6" min="1" max="10"/>
-        </label>
-        <label><i class="fa fa-clock-o" aria-hidden="true"></i> Sampling interval
-            <input id="sample-interval" type="number" step="any" value="3" min="0.1" max="10"/>
-            seconds
-        </label>
-        <label><i class="fa fa-cog" aria-hidden="true"></i> Sampling threshold
-            <input id="sample-threshold" type="number" step="any" value="5" min="0" max="50"/>
-        </label>
-        <button id="sampling-button" type="button"><i class="fa fa-video-camera" aria-hidden="true"></i> Start Sampling</button>
-    </form>
-</div>
-<div id="content" class="pure-g">
-    <div class="pure-u-1-2">
-        <canvas id="videoCanvas"></canvas>
+    <div id="content" class="pure-g">
+        <div class="pure-u-1-2">
+            <canvas id="videoCanvas"></canvas>
+        </div>
+        <div class="pure-u-1-2">
+            <div id="samples"></div>
+        </div>
     </div>
-    <div class="pure-u-1-2">
-        <div id="samples"></div>
-    </div>
-</div>
-<div id="footer">
+    <div id="footer">
 
-</div>
-<!--<script type="text/javascript" src="js/adapter.js"></script>-->
-<script type="text/javascript" src="js/app.min.js"></script>
+    </div>
+    <script src="js/main.min.js"></script>
 </body>
 </html>
