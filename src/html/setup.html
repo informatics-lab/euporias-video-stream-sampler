@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>EUPORIAS :: Ceramic Bell Project :: Setup</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-min.css">
+    <!--<![endif]-->    
     <link type="text/css" rel="stylesheet" href="css/styles.css"/>
     <script src="https://use.fontawesome.com/3c353addfa.js"></script>
 </head>
@@ -23,13 +29,15 @@
             <label>Add Bells
                 <input id="bell-count" type="number" step="any" value="1" min="0" max="32"/>
             </label>
-            <button id="add-bells-button" type="button"><i class="fa fa-plus" aria-hidden="true"></i> Add </button>
-            <button id="reset-bells-button" type="button"><i class="fa fa-remove" aria-hidden="true"></i> Reset </button>
+            <button id="add-button" type="button"><i class="fa fa-plus" aria-hidden="true"></i> Add </button>
+            <button id="reset-button" type="button"><i class="fa fa-remove" aria-hidden="true"></i> Reset </button>
             <button id="home-button" type="button"><i class="fa fa-check" aria-hidden="true"></i> Done </button>
         </form>
     </div>
-    <div id="servos">
+
+    <div id="bell-grid" class="pure-g">
     </div>
+
 
     <script src="js/setup.min.js"></script>
 </body>

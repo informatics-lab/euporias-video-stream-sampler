@@ -37,7 +37,7 @@ body {
     }
 
     button {
-      padding:10px 5px;
+      padding:10px;
       margin-left:20px;
       border-radius: 5px;
     }
@@ -71,6 +71,40 @@ body {
   #footer {
     background-color: $primary-color;
   }
+
+}
+
+#bell-grid {
+
+    margin: 12px;
+    color: $white;
+
+    .bell-tile {
+      margin: 12px;
+      padding: 1em;
+      border: 1px solid whitesmoke;
+      background-color: #99b394;
+    }
+
+
+    input {
+      padding: 5px;
+      width: 80%;
+      color: $background-color;
+    }
+
+    button {
+      padding:10px;
+      border-radius: 5px;
+      margin-top: 15px;
+      margin-right: 10px;
+      background-color: #99b394;
+    }
+
+    legend {
+        color: $white;
+        font-size: 22px;
+    }
 
 }
 
