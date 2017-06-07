@@ -27,18 +27,15 @@ function initSetupPage(){
         //if no hats configured, set these up 
         hatsConfigured(function(result){
             if (result == false){
-                console.log("hats not configured... adding now");
+                console.log("No configuration found on bell server, so adding...");
                 addHats(function(){
-                    //get bells from server and set up toolbar button bindings
-                    bellArray = getBellsFromServer(template);
-                    addToolbarBindings();
-                });                
+                    bellArray = getBellsFromServer(template)
+                });
             }
-            else {
-                //get bells from server and set up toolbar button bindings                
+            else {            
                 bellArray = getBellsFromServer(template);
-                addToolbarBindings();
             }
+            addToolbarBindings();
         });
     });   
 }
@@ -60,7 +57,7 @@ function Bell(template, id, rotate_to_deg) {
     this.delete = function(){
         deleteServo(this.id);
         this.tile.remove();
-        console.log("removed " + id);        
+        console.log("removed bell " + id);        
     };     
     //update this bell with given rotate_to_deg value
     this.update = function(rotate_to_deg){
@@ -102,7 +99,8 @@ function Bell(template, id, rotate_to_deg) {
         thisBell.strike();
     });
     deleteButton.bind('click', function(evt){
-        thisBell.delete();
+        bellArray.splice(bellArray.indexOf(thisBell), 1);   //delete this bell from array
+        thisBell.delete();                                  //now delete from screen
     });    
     
  };
@@ -110,28 +108,30 @@ function Bell(template, id, rotate_to_deg) {
 //get tile template from specified url and callback
 function getTileTemplate(url, callback){
     $.get(url)                                                                  //load html from specified url
-   .done('response', function(html) {
-       var template = document.createRange().createContextualFragment(html);    //create DOM object from html string
-       callback(template);
-   });
- }
+    .done('response', function(html) {
+        var template = document.createRange().createContextualFragment(html);    //create DOM object from html string
+        callback(template);
+    });
+}
 
- function addToolbarBindings(){
-    
+function addToolbarBindings(){
     homeButton.bind('click', function(evt){
         window.location.href=HOME_PAGE;
     });
     addButton.bind('click', function(evt){
         var newBells = parseInt(bellCount.val());
-        //console.log("new Bells:" + newBells);
-        for (var i = 0; i < newBells; i++) {
-            bellArray[i] = new Bell(template, i, 45);
-            bellArray[i].add();
+        var startIndex = bellArray.length > 0 ? bellArray[bellArray.length - 1].id + 1 : 0;     //if bells in list, use id of last bell in array + 1, else use 0
+        var finishIndex = startIndex + newBells;
+        for (var i = startIndex; i < finishIndex; i++) {
+            var b = new Bell(template, i, 45);
+            bellArray.push(b);              //add new bell to array
+            b.add();                        //add bell to bell server
         }
     });
     resetButton.bind('click', function(evt){
-        for (var i = 0; i < bellArray.length; i++) {
-            bellArray[i].delete();
+        var bells = bellArray.length;
+        for (var i = 0; i < bells; i++) {
+            bellArray.pop().delete();       //remove bell from array and delete from screen
         }
     });
  }
@@ -182,7 +182,6 @@ function hatsConfigured(callback){
         $.each(response, function(i, resultset){
             //iterate over each result and inc hat counter
             $.each(resultset, function(i, result){
-                console.log("hat" + result.id + " found.");
                 hats ++;
             });
         });
@@ -217,7 +216,6 @@ function addServo(id, hat, channel, init_deg, rotate_to_deg) {
             'init_deg': init_deg,
             'rotate_to_deg': rotate_to_deg
         }
-        console.log(JSON.stringify(payload));
     $.ajax({
         url: BELL_SERVER + '/servos',
         method: 'POST',
@@ -254,17 +252,21 @@ function moveServo(id) {
 };
 
 function getBellsFromServer(template) {
-    var bells = [];
-
+    var bells = [];  
     $.ajax({
         url: BELL_SERVER + '/servos',
         method: 'GET'
     }).done(function(response) {
         $.each(response, function(i, resultset){
-            //iterate over each result and create new bell instance
-            $.each(resultset, function(i, result){
+            //sort results first, so bells are created in order of id
+            var results = resultset.sort(function(a,b){ 
+                return a.id - b.id;
+            });
+            //iterate over each result, create new bell instance and add to array
+            $.each(results, function(i, result){
                 bells[i] = new Bell(template, result.id, result.rotate_to_deg);
             });
+            console.log("Fetched " + bells.length + " bells from server.");              
         });
     });
     return bells;
