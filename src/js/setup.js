@@ -59,28 +59,27 @@ function Bell(template, id, rotate_to_deg) {
     //enable bell tile on screen
     this.enable = function(){
         $(this.tile).find('*').removeAttr('disabled');
-        //$(this.tile).removeClass('loader');
     };
     //add this bell to server
     this.add = function(){
-        this.disable();
+        this.disable();                 //disable tile
         addServo(this.id, this.hat, this.channel, this.init_deg, this.rotate_to_deg, function(){
-            thisBell.enable();
+            thisBell.enable();          //re-enable tile once successfully added on server
         });
     };
     //delete this bell from server and screen
     this.delete = function(){
-        deleteServo(this.id);
-        this.tile.remove();
-        //console.log("removed bell " + id);        
+        this.disable();                 //disable tile
+        deleteServo(this.id, function(){
+            thisBell.tile.remove();     //remove from screen once successfully deleted from server
+        });
     };
     //update this bell with given rotate_to_deg value
     this.update = function(rotate_to_deg){
-        this.disable();
+        this.disable();                 //disable tile
         updateServo(this.id, this.hat, this.channel, this.init_deg, this.rotate_to_deg, function(){
-            thisBell.enable();
+            thisBell.enable();          //re-enable tile once successfully updated on server
         });
-        //console.log("updated bell " + this.id + " on server... strike angle is " + this.rotate_to_deg);        
     };
     //set strike angle
     this.setStrikeAngle = function(angle){
