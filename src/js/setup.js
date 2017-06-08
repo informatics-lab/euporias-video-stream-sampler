@@ -47,24 +47,41 @@ function Bell(template, id, rotate_to_deg) {
     this.channel = id % 16;                 //channel id (0 - 15)
     this.init_deg = 0;                      //servo initial degrees
     this.rotate_to_deg = rotate_to_deg;     //servo rotate to degrees
+
+    var thisBell = this;        //we need to keep a reference to this object - yuck!!!
+    
     console.log("id: " + this.id + ", hat: " + this.hat + ", channel: " + this.channel);        
     
+    //disable the bell tile on screen
+    this.disable = function(){
+        $(this.tile).find('*').prop('disabled', true);
+    };
+    //enable bell tile on screen
+    this.enable = function(){
+        $(this.tile).find('*').removeAttr('disabled');
+        //$(this.tile).removeClass('loader');
+    };
     //add this bell to server
     this.add = function(){
-        addServo(this.id, this.hat, this.channel, this.init_deg, this.rotate_to_deg);
-    };    
+        this.disable();
+        addServo(this.id, this.hat, this.channel, this.init_deg, this.rotate_to_deg, function(){
+            thisBell.enable();
+        });
+    };
     //delete this bell from server and screen
     this.delete = function(){
         deleteServo(this.id);
         this.tile.remove();
-        console.log("removed bell " + id);        
-    };     
+        //console.log("removed bell " + id);        
+    };
     //update this bell with given rotate_to_deg value
     this.update = function(rotate_to_deg){
-        deleteServo(this.id);
-        addServo(this.id, this.hat, this.channel, this.init_deg, this.rotate_to_deg);
-        console.log("updating bell " + this.id + " on server... strike angle is " + this.rotate_to_deg);        
-    }
+        this.disable();
+        updateServo(this.id, this.hat, this.channel, this.init_deg, this.rotate_to_deg, function(){
+            thisBell.enable();
+        });
+        //console.log("updated bell " + this.id + " on server... strike angle is " + this.rotate_to_deg);        
+    };
     //set strike angle
     this.setStrikeAngle = function(angle){
         this.rotate_to_deg = parseInt(angle);
@@ -75,8 +92,6 @@ function Bell(template, id, rotate_to_deg) {
         moveServo(this.id);
         console.log("striking bell " + this.id);
     };      
-
-    var thisBell = this;        //we need to keep a reference to this object - yuck!!!
 
     //create new bell tile from template, add to screen and keep a reference to the bell tile in the DOM
     var newTile = createNewTile(template, id, rotate_to_deg);
@@ -158,8 +173,6 @@ function createNewTile(template, id, rotate_to_deg) {
     return newTile;
 };
 
-
-
 //add all hats 
 function addHats(callback){
     //add hats synchronously the callback
@@ -208,7 +221,7 @@ function addHat(id, address, callback) {
 };
 
 //add servo with given id, channel, init_deg and rotate_to_deg
-function addServo(id, hat, channel, init_deg, rotate_to_deg) {
+function addServo(id, hat, channel, init_deg, rotate_to_deg, callback) {
     var payload = {
             'id': id,
             'hat': hat,
@@ -224,16 +237,27 @@ function addServo(id, hat, channel, init_deg, rotate_to_deg) {
         data: JSON.stringify(payload)
     }).then(function(response) {
         console.log("Added servo with id " + id);
+        if (callback) callback();
     });
 };
 
 //delete servo with given id
-function deleteServo(id) {
+function deleteServo(id, callback) {
     $.ajax({
         url: BELL_SERVER + '/servos/' + id,
         method: 'DELETE'
     }).then(function(response) {
         console.log("Deleted servo with id " + id);
+        if (callback) callback();
+    });
+};
+
+function updateServo(id, hat, channel, init_deg, rotate_to_deg, callback) {
+    deleteServo(id, function(){
+        addServo(id, hat, channel, init_deg, rotate_to_deg, function(){
+            console.log("Updated servo with id " + id);                
+            if (callback) callback();
+        });
     });
 };
 
