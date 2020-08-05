@@ -57,7 +57,7 @@ gulp.task('build:js', function(done) {
                 .pipe(buffer())
                 .pipe(sourcemaps.init({loadMaps: true}))
                 // Add transformation tasks to the pipeline here.
-                .pipe(uglify())       //minify
+                .pipe(uglify().on('error', function(e){console.log(e);}))       //minify
                 .pipe(sourcemaps.write('./'))
                 .pipe(gulp.dest(BUILD_DEST+'/js/'));
             });
