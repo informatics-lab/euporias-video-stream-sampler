@@ -1,3 +1,4 @@
+
 @import 'https://fonts.googleapis.com/css?family=Open+Sans';
 
 $font-stack: 'Open Sans', sans-serif;
@@ -19,6 +20,10 @@ body {
     background-color: white;
     padding:10px 20px;
     color: grey;
+  
+    .hidden{
+      display:none;
+    }
   }
 
   #controls {
@@ -36,13 +41,33 @@ body {
       color:$background-color;
     }
 
+    .input-button {
+  	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+    }	 
+
+
+    .input-button + label{
+      padding:10px;
+      border-top: 1px solid whitesmoke;
+      border-bottom: 1px solid whitesmoke;
+      background-color: $secondary-color;
+      margin-left:20px;
+      border-radius: 5px;
+      color: #FFF;
+      background-color: #66aa5d;
+      cursor: pointer;
+      display: none;
+    }
+
     button {
       padding:10px;
       margin-left:20px;
       border-radius: 5px;
-    }
-
-    #sampling-button {
       color: #FFF;
       background-color: #66aa5d;
     }
@@ -56,6 +81,10 @@ body {
   #videoCanvas {
     width: 100%;
     height: 100%;
+  }
+
+  #vid {
+    display: none;
   }
 
   #samples {
@@ -112,3 +141,46 @@ body {
   -webkit-filter: grayscale(1);
   filter: grayscale(1);
 }
+
+
+/* ----- END OF styles.scss copy  - merge the below into it */
+
+.flex-container .eq-slider{
+	writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 175px;
+    padding: 0 5px;  
+}
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+	flex-direction: row;
+    flex-wrap: nowrap;
+	justify-content: space-around;
+    background-color: lightgrey;
+	/*margin:10px*/
+}
+
+.flex-container div {
+/*
+  background-color: #f1f1f1;
+  margin: 10px;
+  padding:20px;
+  font-size: 30px;
+*/
+}
+
+.flex-item {
+    background-color: cornflowerblue;
+/*
+    width: 100px;
+    height: 300px;
+
+    margin: 10px;
+*/
+}
+.hidden{
+	display:none;
+}
+

@@ -1,10 +1,10 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const BELL_SERVER = "http://bellhouse.eu.ngrok.io";
-//const BELL_SERVER = "http://0.0.0.0:5000";	//Testing
-//const BELL_SERVER = "http://192.168.1.138:5000"
+//const BELL_SERVER = "http://bellhouse.eu.ngrok.io";
+const BELL_SERVER = "http://0.0.0.0:5000";	//Testing
 const liveX=600;
 const liveY=400;
+//const BELL_SERVER = "http://192.168.1.102:5000"
 
 
 var request = require('request');
@@ -26,11 +26,6 @@ var fileURL;
 
 var liveButton = document.getElementById('live-button');
 var setupButton = document.getElementById('setup-button');
-var audioButton = document.getElementById('audio-button');
-/*
-var keyboardButton = document.getElementById('keyboard-button');
-var barcodeButton = document.getElementById('barcode-button');
-*/
 var samplingButton = document.getElementById('sampling-button');
 var selectLabel = document.getElementById('select-label');
 var video = document.getElementById('vid');
@@ -214,19 +209,7 @@ function initControls() {
     	window.location.href="setup.html";
     });
 
-    audioButton.addEventListener('click', function(evt) {
-    	window.location.href="audio.html";
-    });
 
-/*
-    keyboardButton.addEventListener('click', function(evt) {
-    	window.location.href="keyboard.html";
-    });
-    
-    barcodeButton.addEventListener('click', function(evt) {
-    	window.location.href="barcode.html";
-    });
- */   
     listRecordings();
     sampleDiv = document.getElementById('samples');
     setGridDims(dim1.value, dim2.value);
@@ -439,7 +422,6 @@ function sampleToRequest(sampleArray) {
     });
     if(JSONArray.length > 0) {
         request.post(BELL_SERVER + '/strike').json(JSONArray);
-	console.log('json : ',(JSONArray));
     }
 }
 
