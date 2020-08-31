@@ -1,4 +1,4 @@
-
+@import 'https://fonts.googleapis.com/css?family=Open+Sans';
 
 $font-stack: 'Open Sans', sans-serif;
 $primary-color: #0f7595;
@@ -15,98 +15,10 @@ body {
     text-align: center;
   }
 
-  #header .pure-u-1-2{
-	position : relative;
-	padding : 0px 5px;
-  }
-
-
-  .pagetitle{
-    text-align: center;
-	color: #880000;
-	font-size : 125%;
-	display:block;
-	margin-bottom : 3px;
-  }
-  
-  .pageheader{
-    text-align: left;
-	font-size : 100%;
-	padding-left: 5px;  
-	padding-right: 10px;  
-	margin-bottom: 2%;
-  }
-  
-  .hdr{
-	width : 100%;
-	margin-bottom : 5px;
-  }
-  
-  .hdrlab{
-    display : inline-block;
-	width : 32%;
-	text-align : right;
-   }
-  
-  .hdrtext{
-    display : inline-block;
-	width : 32%;
-	text-align : right;
-	margin-left : 1%;
-	padding-right : 3px;
-   }
-  
-  #addr{
-    margin-right : 10px;
-  }
-  
-  #inputaddr{
-    display : none;
-  }
-  
- .hdrbutton{
-    display : inline-block;
-	width : 32%;
-	border-radius: 5px;
-	color: #FFF;
-	background-color: #66aa5d;
-  }
-  
-  
-  .status{
-	width : 100%;
-	text-align : right;
-	margin-top : 20px;
-  }
-  
-  #rec-name{
-    color : white;  
-  }
-  
-  #status{
-	font-size : 95%;
-	bottom: 1px;
-	left: 10px;  
-    border: brown;
-    border-style: solid;
-    border-radius: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-	padding-top: 3px;
-    padding-bottom: 3px;
-    color: black;
-  }
-  
-
-	#header {
+  #header {
     background-color: white;
-    padding: 0px 20px;
-	padding-top : 10px;
+    padding:10px 20px;
     color: grey;
-  
-    .hidden{
-      display:none;
-    }
   }
 
   #controls {
@@ -124,76 +36,26 @@ body {
       color:$background-color;
     }
 
-    .input-button {
-  	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-    }	 
-
-
-    .input-button + label{
-      padding:10px;
-      border-top: 1px solid whitesmoke;
-      border-bottom: 1px solid whitesmoke;
-      background-color: $secondary-color;
-      margin-left:20px;
-      border-radius: 5px;
-      color: #FFF;
-      background-color: #66aa5d;
-      cursor: pointer;
-      display: none;
-    }
-
     button {
       padding:10px;
       margin-left:20px;
       border-radius: 5px;
+    }
+
+    #sampling-button {
       color: #FFF;
       background-color: #66aa5d;
     }
 
-	.menu {
-		display:block;
-		width:-webkit-fill-available;
-		margin-top:10px;
-	}
-	
     #record-button {
       color: #880000;
     }
-	
-	#sample-interval{
-	  width : 4em;
-	}
-	
-	#bass-cut{
-		width : 4em;
-	}
-	
-	#sample-threshold{
-	  width : 4em;
-	}
-	
-	#auto-threshold{
-	  margin : 0px 3px;
-	}
-	
-	#piece-time{
-	  margin-left : 1em;
-	}
 
   }
 
   #videoCanvas {
     width: 100%;
     height: 100%;
-  }
-
-  #vid {
-    display: none;
   }
 
   #samples {
@@ -206,81 +68,6 @@ body {
     }
   }
 
-  #words{
-	input[type=text] {
-		color: #ff0000;
-		height: 100%;
-		width: 100%;
-		padding: 12px 20px;
-		margin: 8px 0;
-		box-sizing: border-box;
-	} 
-	textarea{
-		font-size: 14px;
-		color: #000000;
-		margin: 1%;
-		padding: 2px;
-		line-height: 1.5;
-		border-radius: 5px;
-		border: 1px solid #ccc;
-		box-shadow: 1px 1px 1px #999;
-		height: 25em;
-		width: 97%;
-		resize: none;
-	}
-  }
-  
- #scan{
-	input[type=text] {
-		color: #ff0000;
-		height: 100%;
-		width: 100%;
-		padding: 12px 20px;
-		margin: 8px 0;
-		box-sizing: border-box;
-	} 
-	label{
-		width: 51%;
-		margin: 0 auto;
-	}
-	textarea{
-		font-size: 14px;
-		color: #000000;
-		margin: 0 auto;
-		padding: 2px;
-		line-height: 1.5;
-		border-radius: 5px;
-		border: 1px solid #ccc;
-		box-shadow: 1px 1px 1px #999;
-		width: 50%;
-		resize: none;
-	}
-  }
-  
-  #midi{
-    div{
-		width: 25%;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	textarea{
-		font-size: 14px;
-		color: #000000;
-		margin: 1%;
-		margin-left:10%;
-		padding: 2px;
-		line-height: 1.5;
-		border-radius: 5px;
-		border: 1px solid #ccc;
-		box-shadow: 1px 1px 1px #999;
-		height: 1.5em;
-		width: 50%;
-		resize: none;
-		text-align: center;
-	}
-  }
-
-  
   #footer {
     background-color: $primary-color;
   }
@@ -325,46 +112,3 @@ body {
   -webkit-filter: grayscale(1);
   filter: grayscale(1);
 }
-
-
-/* ----- END OF styles.scss copy  - merge the below into it */
-
-.flex-container .eq-slider{
-	writing-mode: bt-lr; /* IE */
-    -webkit-appearance: slider-vertical; /* WebKit */
-    width: 8px;
-    height: 175px;
-    padding: 0 5px;  
-}
-.flex-container {
-    display: -webkit-flex;
-    display: flex;
-	flex-direction: row;
-    flex-wrap: nowrap;
-	justify-content: space-around;
-    background-color: lightgrey;
-	/*margin:10px*/
-}
-
-.flex-container div {
-/*
-  background-color: #f1f1f1;
-  margin: 10px;
-  padding:20px;
-  font-size: 30px;
-*/
-}
-
-.flex-item {
-    background-color: cornflowerblue;
-/*
-    width: 100px;
-    height: 300px;
-
-    margin: 10px;
-*/
-}
-.hidden{
-	display:none;
-}
-
