@@ -1,82 +1,43 @@
 'use strict';
-//const BELL_SERVER       = "http://bellhouse.eu.ngrok.io";
-//const BELL_SERVER       = "http://192.168.1.156:5000";
-//const BELL_SERVER       = "http://192.168.1.142:5000";
+const CAMERA_FRAME_RATE = 1000 / 20;
+const BELL_SERVER       = "http://bellhouse.eu.ngrok.io";
+const HOME_PAGE         = 'index.html';                     //homepage
 const TILE_TEMPLATE     = 'tile.html';                      //html tile template
+
 var $               = require("jquery");
-var request			= require('request');
-var requestPromise	= require('request-promise-native');
-var fs				= require('fs');
-var d 		    	= new Date();
-var addButton       = document.getElementById('add-button');
-var resetButton     = document.getElementById('reset-button');
-var startButton 	= document.getElementById('start-button');
-var bhAddr		= ""
+var homeButton      = $('#home-button');
+var addButton       = $('#add-button');
 var bellCount       = $('#bell-count');
+var resetButton     = $('#reset-button');
 var bellGrid        = $('#bell-grid');                      //html grid where tiles (representing bells) will be added
 var template        = null;                                 //bell tile template (DOM object constructed from TILE_TEMPLATE)
 var bellArray       = [];                                   //array of bells which should be in sync with server
 
 
-var settingAddr		= false;
+initSetupPage();
 
-
-/****/
-const HOME_PAGE         = 'index.html';                     //homepage
-var homeButton      = document.getElementById('home-button');
-var shutdownButton 	= document.getElementById('shutdown-button');
-var bhInclude 		= require("./include.js");
-var statusLabel		= document.getElementById('status');
-var bhAddr =""
-var setAddrButton	= document.getElementById('addr-button');
-var addrIp			= document.getElementById('inputaddr');
-var addrText		= document.getElementById('addr');
-var settingAddr		= false;
-/****/
-
-document.getElementsByTagName("BODY")[0].onload = initSetupPage();
-document.getElementsByTagName("BODY")[0].onunload = stub();
-
-function stub(){
-	console.log("unload stub");
-}
 
 /*load tile template and get bells config from server*/
 function initSetupPage(){
-	console.log('initSetupPage');
-	statusUpdate("Initialising...");statusOK();
-	settingAddr		= false;
+
     //get tile template from url
     getTileTemplate(TILE_TEMPLATE, function(result){
         template = result;
-		addToolbarBindings();
-		if (getBHAddr()){
-			addrSet(bhAddr);addrOK();
-			bhInclude.testStarted(bhAddr).then(function (started){
-				if(started != null){
-					if (started){
-						bhStart();
-						statusUpdate("Updating...");statusOK();
-						//buttonStartStateSet(started);
-					}else{
-						bhStop();
-						statusUpdate("Stopped...");statusBad('black');
-						//buttonStartStateSet(started);
-					}
-				}else{
-					console.log('initSetupPage : No Comms');
-					commsLost();
-				}
-			},function(err){
-				console.log("Err in initSetupPage  :" + err);
-				commsLost();
-				}
-			).catch(function(error){
-				console.log("Caught in initSetupPage " + error);
-				commsLost();
-			});
-		}
-	});
+
+        //if no hats configured, set these up 
+        hatsConfigured(function(result){
+            if (result == false){
+                console.log("No configuration found on bell server, so adding...");
+                addHats(function(){
+                    bellArray = getBellsFromServer(template)
+                });
+            }
+            else {            
+                bellArray = getBellsFromServer(template);
+            }
+            addToolbarBindings();
+        });
+    });   
 }
 
 function Bell(template, id, rotate_to_deg) { 
@@ -106,20 +67,13 @@ function Bell(template, id, rotate_to_deg) {
             thisBell.enable();          //re-enable tile once successfully added on server
         });
     };
-    //delete this bell from local map
-    this.localDelete = function(){
-        this.disable();               //disable tile
-		thisBell.tile.remove();     //remove from screen 
-    };
-
-	//delete this bell from bellhouse - Note will remove it from config permanently
-	this.bellDelete = function(){
+    //delete this bell from server and screen
+    this.delete = function(){
         this.disable();                 //disable tile
         deleteServo(this.id, function(){
             thisBell.tile.remove();     //remove from screen once successfully deleted from server
         });
     };
-	
     //update this bell with given rotate_to_deg value
     this.update = function(rotate_to_deg){
         this.disable();                 //disable tile
@@ -159,9 +113,8 @@ function Bell(template, id, rotate_to_deg) {
         thisBell.strike();
     });
     deleteButton.bind('click', function(evt){
-		console.log ("DeleteButton Bind Event");
         bellArray.splice(bellArray.indexOf(thisBell), 1);   //delete this bell from array
-        thisBell.bellDelete();                              //now delete it 
+        thisBell.delete();                                  //now delete from screen
     });    
     
  };
@@ -176,14 +129,11 @@ function getTileTemplate(url, callback){
 }
 
 function addToolbarBindings(){
-	
-    homeButton.addEventListener('click', function(evt){
+    homeButton.bind('click', function(evt){
         window.location.href=HOME_PAGE;
     });
-	
-    addButton.addEventListener('click', function(evt){
+    addButton.bind('click', function(evt){
         var newBells = parseInt(bellCount.val());
-		//HERE check that the Pi has enough HATS
         var startIndex = bellArray.length > 0 ? bellArray[bellArray.length - 1].id + 1 : 0;     //if bells in list, use id of last bell in array + 1, else use 0
         var finishIndex = startIndex + newBells;
         for (var i = startIndex; i < finishIndex; i++) {
@@ -192,167 +142,13 @@ function addToolbarBindings(){
             b.add();                        //add bell to bell server
         }
     });
-	
-	shutdownButton.addEventListener('click', function(evt){
-		console.log('shutdownButton');
-		statusUpdate("Shutdown Requested");statusBad('brown');
-		pageEnable(false);
-		buttonState(startButton,false);
-		buttonState(shutdownButton,false);
-		return requestPromise (
-			{ url : bhAddr + '/shutdown'}
-			);
-	});
-	
-    resetButton.addEventListener('click', function(evt){
-		bellsLocalDelete();
-		//HERE reread config from BH ?
-	});
-
-    startButton.addEventListener('click', function(evt){
-		bhStartStop(bellArray);
+    resetButton.bind('click', function(evt){
+        var bells = bellArray.length;
+        for (var i = 0; i < bells; i++) {
+            bellArray.pop().delete();       //remove bell from array and delete from screen
+        }
     });
-	
-	setAddrButton.addEventListener('click', function(evt){
-		console.log('setAddrButton:click');
-		if (!settingAddr){
-			//Change BH Address
-			setAddrButton.innerHTML='Set';
-			settingAddr=true;
-			addrText.style.display='none';
-			addrIp.style.display='unset';
-			if (addrText.innerHTML!='No Address Set'){
-				addrIp.value=addrText.innerHTML;
-			}
-		}else{
-			//Set BH Address
-			statusUpdate('Communicating...');
-			console.log('Bellohous address set to >' + addrIp.value);
-			bhAddr = addrIp.value
-			bhInclude.objConfig.ipAddr = addrIp.value;
-			bhInclude.writeSysConfig(bhInclude.objConfig);	
-			addrSet(addrIp.value);
-			setAddrButton.innerHTML='Change';			
-			settingAddr=false;
-			addrText.style.display='unset';
-			addrIp.style.display='none';
-			bhInclude.testStarted(bhAddr).then(function (started){
-				if(started != null){
-					buttonStartStateSet(started);
-					if (started){
-						statusUpdate("Ready...");statusOK();
-					}else{
-						statusUpdate("Stopped...");statusBad('black');
-					}
-				}else{
-					console.log('addToolbarBindings():setAddrButton.addEventListener : No Comms');
-					commsLost();
-				}
-			},function(err){
-				console.log("Err in addToolbarBindings():setAddrButton.addEventListener  :" + err);
-				commsLost();
-				}
-			).catch(function(error){
-				console.log("Caught in addToolbarBindings():setAddrButton.addEventListener " + error);
-				commsLost();
-			});		
-		}
-	});
-}
-
-function buttonStartStateSet(started){
-	if(started){
-		pageEnable(true);
-		startButton.innerHTML="Stop";
-	}else{
-		pageEnable(false);
-		buttonState(startButton,true);
-		buttonState(shutdownButton,true);
-		startButton.innerHTML="Start";
-	}
-}
-
-function bhStartStop(bells){
-	console.log("bhStartStop");
-	pageEnable(false);
-	statusUpdate("Communicating...");
-	bhInclude.testStarted(bhAddr).then(function (started){
-		if(started != null){
-			console.log("bhStartStop Started :" + started);
-			if (!started){
-				return(bhStart());
-			}else{
-				return(bhStop());
-			}
-		}else{
-			console.log('bhStartStop : No Comms');
-			commsLost();
-		}
-	}).catch (function (err){
-		statusUpdate("Failed To Start...");statusBad('brown');
-		console.log('ERROR : bhStartStop started() : ',err);
-	});
-}
-
-function bhStop(){
-	//Put the bellhouse into Stopped mode. Return promise
-	return requestPromise (
-		{ url : bhAddr + '/stop' }
-	).then (function (response){ 
-		bellsLocalDelete()
-		console.log ("bhStop /stop >" + response);
-		buttonStartStateSet(false);
-		statusUpdate("Stopped...");statusBad('black');
-	}).catch (function (err){
-		statusUpdate("Failed To Stop...");statusBad('brown');
-		console.log('ERROR : bhStop /stop : ',err);
-	});
-}
-function bhStart(){
-	console.log("Starting BellHouse");
-	return requestPromise (
-		{ url : bhAddr + '/start' }
-	).then (function (response) {
-		console.log ("bhStart /start >" + response);
-		return requestPromise (
-			{ url : bhAddr + '/loadconf' }
-		).then (function (response) {
-			console.log ("bhStart /loadconf >" + response);
-			bellsLocalDelete();
-			bellArray = getBellsFromServer(template);
-			return requestPromise (
-				{ url : bhAddr + '/hats ' }
-			).then (function (response) {
-				console.log ("bhStart /hats >" + response);
-				
-				buttonStartStateSet(true);
-				statusUpdate("Ready...");statusOK();
-			}).catch (function (err) {
-				
-			});
-		}).catch (function (err){
-			statusUpdate("Failed To Load Configuration...");statusBad('brown');
-			console.log('ERROR : bhStart /loadconf : ',err);
-		});
-	}).catch (function (err){
-		statusUpdate("Failed To Start...");statusBad('brown');
-		console.log('ERROR : bhStart /start : ',err);
-	});
-}
-
-
-function bellsLocalDelete(){
-	//Delete all bells locally displayed
-	var bells = bellArray.length;
-	for (var i = 0; i < bells; i++) {
-		bellArray.pop().localDelete();       //remove bell from array and delete from screen
-	}
-}
-
-
-
-
-
+ }
 
 
  //Create new DOM tile from template and given params 
@@ -376,8 +172,52 @@ function createNewTile(template, id, rotate_to_deg) {
     return newTile;
 };
 
+//add all hats 
+function addHats(callback){
+    //add hats synchronously the callback
+    addHat(0, "0x40", function(){
+        addHat(1, "0x41", function(){
+            addHat(2, "0x42", function(){
+                callback();
+            });
+        });       
+    });                     
+}
 
+//return true if hats configured, else return false and callback
+function hatsConfigured(callback){
+    var hats = 0;
+    $.ajax({
+        url: BELL_SERVER + '/hats',
+        method: 'GET'
+    }).done(function(response) {
+        $.each(response, function(i, resultset){
+            //iterate over each result and inc hat counter
+            $.each(resultset, function(i, result){
+                hats ++;
+            });
+        });
+        callback(hats == 3);    //if exactly 3 hats, return true else return false
+    });
+}
 
+//add hat with given id and address and callback
+function addHat(id, address, callback) {
+    var payload = {
+            'id': id,
+            'address': address
+        }
+    $.ajax({
+        url: BELL_SERVER + '/hats',
+        method: 'POST',
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify(payload)
+    }).then(function(response) {
+        console.log("Added hat with id " + id + " and address " + address);
+        callback();
+    });
+};
 
 //add servo with given id, channel, init_deg and rotate_to_deg
 function addServo(id, hat, channel, init_deg, rotate_to_deg, callback) {
@@ -389,7 +229,7 @@ function addServo(id, hat, channel, init_deg, rotate_to_deg, callback) {
             'rotate_to_deg': rotate_to_deg
         }
     $.ajax({
-        url: bhAddr + '/servos',
+        url: BELL_SERVER + '/servos',
         method: 'POST',
         dataType: "json",
         contentType: "application/json",
@@ -403,7 +243,7 @@ function addServo(id, hat, channel, init_deg, rotate_to_deg, callback) {
 //delete servo with given id
 function deleteServo(id, callback) {
     $.ajax({
-        url: bhAddr + '/servos/' + id,
+        url: BELL_SERVER + '/servos/' + id,
         method: 'DELETE'
     }).then(function(response) {
         console.log("Deleted servo with id " + id);
@@ -420,11 +260,11 @@ function updateServo(id, hat, channel, init_deg, rotate_to_deg, callback) {
     });
 };
 
-//move servo with given id
+ //move servo with given id
 function moveServo(id) {
     var servoIdArray = "[" + id + "]";
     $.ajax({
-        url: bhAddr + '/strike',
+        url: BELL_SERVER + '/strike',
         method: 'POST',
         dataType: "json",
         contentType: "application/json",     
@@ -437,7 +277,7 @@ function moveServo(id) {
 function getBellsFromServer(template) {
     var bells = [];  
     $.ajax({
-        url: bhAddr + '/servos',
+        url: BELL_SERVER + '/servos',
         method: 'GET'
     }).done(function(response) {
         $.each(response, function(i, resultset){
@@ -455,76 +295,8 @@ function getBellsFromServer(template) {
     return bells;
 };
 
- 
-/****************************************/
-function commsLost(){
-	console.log("commsLost");
-	statusLabel.innerHTML=" Bellhouse communication lost...";
-	statusBad('brown');
-	pageEnable(false);
-} 
-function commsOK(){
-	console.log("commsOK");
-	statusLabel.innerHTML=" Bellhouse communication OK...";
-	statusOK();
-	pageEnable(true);
-}
-function statusUpdate(newStatus){
-	statusLabel.innerHTML=" Bellhouse " + newStatus;
-}
-function statusOK(){
-	statusLabel.style.border='unset';
-	statusLabel.style.padding = '3px 0px';
-}
-function statusBad(colour){
-	statusLabel.style.borderStyle = 'solid';
-	statusLabel.style.borderColor = colour;
-	statusLabel.style.padding = '3px 10px';
-}
-function addrSet(address){
-	addrText.innerHTML=address;
-}
-function addrOK(){
-	addrText.style.border='unset';
-}
-function addrBad(){
-	addrText.style.border='solid';
-}
-function pageEnable(enable){
-	console.log("pageEnable : " + enable);
-//	buttonState(homeButton,enable);
-	buttonState(addButton,enable);
-	buttonState(resetButton,enable);
-	buttonState(startButton,enable);
-	buttonState(shutdownButton,enable);
-}
 
-function buttonState(aButton,enable){
-//	console.log("buttonState : " + aButton.id)
-	if(!enable){
-		aButton.style.backgroundColor = "#8c8c8c";
-		aButton.disabled=true;
-	}else{
-		aButton.style.backgroundColor = "#66aa5d";
-		aButton.disabled=false;
-	}
-}
-function getBHAddr(){
-	var readOK = false;
-	console.log ("getBHAddr ");
-	console.log(bhInclude.objConfig.ipAddr);
-	bhInclude.objConfig = bhInclude.readSysConfig(bhInclude.objConfig);
-	console.log("bhAddr >" + bhInclude.objConfig.ipAddr);
-	if (bhInclude.objConfig.stat === "Unreadable"){
-		statusUpdate("Browser doesn't permit access to local storage");
-	}else if (bhInclude.objConfig.stat === "Error"){
-		statusUpdate("Error reading from local storage");
-	}else if (typeof bhInclude.objConfig.stat ==="undefined"){
-		statusUpdate("No Address in local storage");
-	}else{
-		readOK = true;
-		bhAddr = bhInclude.objConfig.ipAddr;
-	}
-	return(readOK);
-}
+
+
+
 

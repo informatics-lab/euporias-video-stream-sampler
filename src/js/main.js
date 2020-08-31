@@ -1,46 +1,17 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
 const BELL_SERVER = "http://bellhouse.eu.ngrok.io";
-//const BELL_SERVER = "http://0.0.0.0:5000";	//Testing
-//const BELL_SERVER = "http://192.168.1.138:5000"
-const liveX=600;
-const liveY=400;
 
 
 var request = require('request');
-
-var stream;
 
 var largeGridDim, smallGridDim;
 var sampling = false;
 var recording = false;
 var playing = false;
-var videoLoaded = false;
-var live = true;
 var threshold = 5;
 var samplingInterval, sampleLoop, sample, sampleDiv;
 var video, videoCanvas, videoCanvasCtx;
-var URL=window.URL;
-var fileURL;
-
-
-var liveButton = document.getElementById('live-button');
-var setupButton = document.getElementById('setup-button');
-var audioButton = document.getElementById('audio-button');
-/*
-var keyboardButton = document.getElementById('keyboard-button');
-var barcodeButton = document.getElementById('barcode-button');
-*/
-var samplingButton = document.getElementById('sampling-button');
-var selectLabel = document.getElementById('select-label');
-var video = document.getElementById('vid');
-var videoCanvas = document.getElementById('videoCanvas');
-var vidX=liveX;
-var vidY=liveY;
-
-
-//QAD pass of server address to following pages
-//sessionStorage.setItem('BELL_SERVER',BELL_SER|VER);
 
 /*Setup event listeners for controls on homepage */
 initControls();
@@ -48,17 +19,18 @@ initVideo();
 
 
 function initVideo() {
-    //video = document.createElement('video');
-    video.width = liveX;
-    video.height = liveY;
-    videoCanvas.width = liveX;
-    videoCanvas.height = liveY;
+    video = document.createElement('video');
+    video.width = 600;
+    video.height = 400;
+    videoCanvas = document.getElementById('videoCanvas');
+    videoCanvas.width = 600;
+    videoCanvas.height = 400;
 
     videoCanvasCtx = videoCanvas.getContext('2d');
 
     setInterval(function () {
-        videoCanvasCtx.clearRect(0, 0, liveX, liveY);
-        videoCanvasCtx.drawImage(video, 0, 0, liveX, liveY, 0, 0, liveX, liveY);
+        videoCanvasCtx.clearRect(0, 0, 600, 400);
+        videoCanvasCtx.drawImage(video, 0, 0, 600, 400, 0, 0, 600, 400);
     }, CAMERA_FRAME_RATE);
 }
 
@@ -67,18 +39,18 @@ function initControls() {
     var dim2 = document.getElementById('grid-dim-2');
     var sampleInterval = document.getElementById('sample-interval');
     var sampleThreshold = document.getElementById('sample-threshold');
+    var samplingButton = document.getElementById('sampling-button');
     var recordingButton = document.getElementById('record-button');
     var playRecordingButton = document.getElementById('play-record-button')
-    var selRecButton = document.getElementById('select-button');
+    var setupButton = document.getElementById('setup-button');
 
 
-    //alert("Test Page, not linked to ngrok");
     dim1.addEventListener('change', function (evt) {
         var value1 = evt.target.value;
         var value2 = dim2.value;
         setGridDims(value1, value2);
         if (sampling) {
-            createSamples(liveX,liveY);
+            createSamples();
         }
     });
 
@@ -87,7 +59,7 @@ function initControls() {
         var value1 = dim1.value;
         setGridDims(value1, value2);
         if (sampling) {
-            createSamples(liveX,liveY);
+            createSamples();
         }
     });
 
@@ -95,7 +67,7 @@ function initControls() {
         var value = evt.target.value;
         samplingInterval = value * 1000;
         if (sampling) {
-            createSamples(liveX,liveY);
+            createSamples();
         }
     });
 
@@ -103,69 +75,23 @@ function initControls() {
         var value = evt.target.value;
         threshold = value;
         if(sampling) {
-            createSamples(liveX,liveY);
+            createSamples();
         }
     });
 
-    liveButton.addEventListener('click',function(evt){
-	if(live) {
-	    live = false;
-	    videoCanvas.style.display="none";
-	    video.style.display="inline";
-	    if (videoLoaded){
-	        video.src = fileURL;
-	    	video.setAttribute("controls",true);
-	    }
-	    samplingButton.style.display="none";
-	    selectLabel.style.display="inline";
-	    this.innerText = "Live Mode";
-	} else {
-	    live = true;
-	    videoCanvas.style.display="inline";
-	    video.style.display="none";
-	    video.removeAttribute("controls");
-	    navigator.webkitGetUserMedia({audio: false, video: true}, handleSuccess, handleError);
-	    samplingButton.style.display='inline';
-	    selectLabel.style.display="none";
-	    this.innerText = "Video Mode";
-	}
-    });
-
-    selRecButton.addEventListener('change', function(evt) {
-	var file = this.files[0];
-	var type = file.type;
-        fileURL = URL.createObjectURL(file);
-	video.src = fileURL;
-	videoLoaded = true;
-	video.setAttribute("controls",true);
-        console.log(video.src);
-    });
-        
-    video.addEventListener('play', function(evt) {
-	selRecButton.disabled=true;
-        if(!sampling) {
-	    samplingStart(vidX,vidY);
-	}
-    }, false);
-
-    video.addEventListener('pause', function(evt) {
-	selRecButton.disabled=false;
-        if(sampling) {
-	    samplingStop(liveX,liveY);
-	}
-    }, false);
-
-    video.addEventListener('loadedmetadata' , function(evt) {
- 	vidX = this.videoWidth;
-	vidY = this.videoHeight;
-    }, false);	
-    
     samplingButton.addEventListener('click', function(evt) {
         if(!sampling) {
-	    samplingStart(liveX,liveY);
+            sampling = true;
+            createSamples();
+            samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Stop Sampling";
+            samplingButton.style.backgroundColor = "#aa4b46";
         } else {
-	    samplingStop();
-	}
+            sampling = false;
+            clearSamples();
+            samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Start Sampling";
+            samplingButton.style.backgroundColor = "#66aa5d";
+
+        }
     });
 
     recordingButton.addEventListener('click', function(evt) {
@@ -211,55 +137,14 @@ function initControls() {
     });
 
     setupButton.addEventListener('click', function(evt) {
-    	window.location.href="setup.html";
+       window.location.href="setup.html"
     });
 
-    audioButton.addEventListener('click', function(evt) {
-    	window.location.href="audio.html";
-    });
 
-/*
-    keyboardButton.addEventListener('click', function(evt) {
-    	window.location.href="keyboard.html";
-    });
-    
-    barcodeButton.addEventListener('click', function(evt) {
-    	window.location.href="barcode.html";
-    });
- */   
     listRecordings();
     sampleDiv = document.getElementById('samples');
     setGridDims(dim1.value, dim2.value);
     samplingInterval = sampleInterval.value * 1000;
-}
-
-
-function samplingStart(x,y){
-    sampling = true;
-    createSamples(x,y);
-    samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Stop Sampling";
-    samplingButton.style.backgroundColor = "#aa4b46";
-    liveButton.style.backgroundColor = "#8c8c8c";
-    liveButton.disabled=true;
-    setupButton.style.backgroundColor = "#8c8c8c";
-    setupButton.disabled=true;
-    selectLabel.style.backgroundColor = "#8c8c8c";
-    selectLabel.disabled=true;
-    selectLabel.style.cursor="default";
-}
-
-function samplingStop(){ 
-    sampling = false;
-    clearSamples();
-    samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Start Sampling";
-    samplingButton.style.backgroundColor = "#66aa5d";
-    liveButton.style.backgroundColor = "#66aa5d";
-    liveButton.disabled=false;
-    setupButton.style.backgroundColor = "#66aa5d";
-    setupButton.disabled=false;
-    selectLabel.style.backgroundColor = "#66aa5d";
-    selectLabel.disabled=false;
-    selectLabel.style.cursor="pointer";
 }
 
 function setGridDims(val1, val2) {
@@ -272,7 +157,7 @@ function setGridDims(val1, val2) {
     }
 }
 
-function createSamples(maxX,maxY) {
+function createSamples() {
     console.log("Initialising sample, sampling at " + samplingInterval + " millis");
 
     clearSamples();
@@ -283,8 +168,8 @@ function createSamples(maxX,maxY) {
                                 y : 0
                             },
                             bottomRight : {
-                                x : maxX,
-                                y : maxY
+                                x : 600,
+                                y : 400
                             }
                         };
 
@@ -421,13 +306,12 @@ function getSampleGrid(clickPattern) {
 }
 
 function handleSuccess(stream) {
-    //video.src = window.URL.createObjectURL(stream);
-    stream = window.URL.createObjectURL(stream);
-    video.src = stream;
+    video.srcObject = stream;
+    video.play();
 }
 
 function handleError(error) {
-    console.log('user media error: ', error);
+    console.log("Problem with camera: " + error)
 }
 
 function sampleToRequest(sampleArray) {
@@ -439,7 +323,6 @@ function sampleToRequest(sampleArray) {
     });
     if(JSONArray.length > 0) {
         request.post(BELL_SERVER + '/strike').json(JSONArray);
-	console.log('json : ',(JSONArray));
     }
 }
 

@@ -1,2 +1,3 @@
 node_modules
 build
+server/src/PotStrikingServer/__pycache__
