@@ -1,10 +1,11 @@
 @import 'https://fonts.googleapis.com/css?family=Open+Sans';
 
 $font-stack: 'Open Sans', sans-serif;
-$primary-color: #0f7595;
-$secondary-color: #164D95;
-$background-color: #333;
-$white: #FFF;
+$primary-color: #e28c26;
+$secondary-color: #c83d2a;
+$background-color: #75a0ca;
+$white: #f7f4ed;
+
 
 body {
   font: 100% $font-stack;
@@ -16,17 +17,33 @@ body {
   }
 
   #header {
-    background-color: white;
+    background-color: $white;
     padding:10px 20px;
     color: grey;
+
+   button {
+      padding:10px;
+      margin-left:20px;
+      border-radius: 5px;
+    }
+
+    #record-button {
+        color: $white;
+        background-color: $secondary-color;
+    }
+
+    #play-record-button {
+      color: $white;
+      background-color: $primary-color;
+    }
   }
 
   #controls {
     padding-top: 10px;
     padding-bottom: 10px;
     background-color: $secondary-color;
-    border-top: 1px solid whitesmoke;
-    border-bottom: 1px solid whitesmoke;
+    border-top: 1px solid $white;
+    border-bottom: 1px solid $white;
 
     label{
       padding-left: 20px;
@@ -42,13 +59,14 @@ body {
       border-radius: 5px;
     }
 
+    #play-record-button,
     #sampling-button {
-      color: #FFF;
-      background-color: #66aa5d;
+      color: $white;
+      background-color: $primary-color;
     }
 
     #record-button {
-      color: #880000;
+      color: $primary-color;
     }
 
   }
@@ -62,7 +80,7 @@ body {
     margin: 0 auto;
 
     canvas {
-      border: 1px solid whitesmoke;
+      border: 1px solid $white;
       padding: 0;
       margin: 1px;
     }
@@ -82,8 +100,8 @@ body {
     .bell-tile {
       margin: 12px;
       padding: 1em;
-      border: 1px solid whitesmoke;
-      background-color: #99b394;
+      border: 1px solid $white;
+      background-color: $primary-color;
     }
 
 
@@ -98,7 +116,7 @@ body {
       border-radius: 5px;
       margin-top: 15px;
       margin-right: 10px;
-      background-color: #99b394;
+      background-color: $background-color;
     }
 
     legend {
