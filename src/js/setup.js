@@ -5,6 +5,7 @@ const HOME_PAGE         = 'index.html';                     //homepage
 const TILE_TEMPLATE     = 'tile.html';                      //html tile template
 
 var $               = require("jquery");
+var startConfig     = $('#start-config');
 var homeButton      = $('#home-button');
 var addButton       = $('#add-button');
 var bellCount       = $('#bell-count');
@@ -38,6 +39,8 @@ function initSetupPage(){
             addToolbarBindings();
         });
     });   
+
+    
 }
 
 function Bell(template, id, rotate_to_deg) { 
