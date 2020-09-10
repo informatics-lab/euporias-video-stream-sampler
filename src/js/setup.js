@@ -5,7 +5,7 @@ const HOME_PAGE         = 'index.html';                     //homepage
 const TILE_TEMPLATE     = 'tile.html';                      //html tile template
 
 var $               = require("jquery");
-var startConfig     = $('#start-config');
+var startButton     = $('#start-config');
 var homeButton      = $('#home-button');
 var addButton       = $('#add-button');
 var bellCount       = $('#bell-count');
@@ -151,7 +151,12 @@ function addToolbarBindings(){
             bellArray.pop().delete();       //remove bell from array and delete from screen
         }
     });
- }
+    startButton.bind('click', function(evt){
+      console.log('start');
+      loadConfig();
+    });
+
+  }
 
 
  //Create new DOM tile from template and given params 
@@ -276,6 +281,24 @@ function moveServo(id) {
         console.log("Moved servo with id " + id);
     });
 };
+
+
+var confStarted = false;
+
+function loadConfig() {
+    $.ajax({
+      url: BELL_SERVER + '/start',
+      method: 'GET'
+    }).done(function(response) {
+      $.ajax({
+        url: BELL_SERVER + '/loadconf',
+        method: 'GET'
+      }).done(function(response) {
+        confStarted = true;
+        console.log("loaded");
+      })
+    })
+}
 
 function getBellsFromServer(template) {
     var bells = [];  
