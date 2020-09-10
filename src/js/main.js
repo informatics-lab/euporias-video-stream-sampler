@@ -84,12 +84,11 @@ function initControls() {
             sampling = true;
             createSamples();
             samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Stop Sampling";
-            samplingButton.style.backgroundColor = "#aa4b46";
+            samplingButton.style.backgroundColor = "#c83d2a";
         } else {
             sampling = false;
             clearSamples();
             samplingButton.innerHTML = "<i class=\"fa fa-video-camera\" aria-hidden=\"true\"></i> Start Sampling";
-            samplingButton.style.backgroundColor = "#66aa5d";
 
         }
     });
