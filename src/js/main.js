@@ -1,6 +1,6 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const BELL_SERVER = "http://bellhouse.eu.ngrok.io";
+const BELL_SERVER = "https://bellhouse.eu.ngrok.io";
 
 
 var request = require('request');
