@@ -12,7 +12,7 @@ $dark: #002e39;
 body {
   font: 100% $font-stack;
   color: $dark-blue;
-  background-color: $white;
+  background-color: $light-blue;
 
   h3{
     text-align: center;
@@ -28,11 +28,6 @@ body {
       background-color: lighten($orange, 10);
     }
   }
-
-  #header {
-    background-color: $white;
-    padding:10px 20px;
-
     #record-button {
         color: $white;
         background-color: $red;
@@ -40,21 +35,29 @@ body {
           background-color: lighten($red, 10);
         }
     }
+
+  #header {
+    background-color: $white;
+
+    img {
+      width: 350px;
+    }
+
   }
 
   #controls {
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: $light-blue;
-    border-top: 1px solid $white;
-    border-bottom: 1px solid $white;
+    background-color: $white;
+    border-top: 3px solid $red;
+    border-bottom: 3px solid $red;
 
     label{
       padding-left: 20px;
     }
 
     input {
-      color:$light-blue;
+      max-width: 65px;
     }
 
   }
