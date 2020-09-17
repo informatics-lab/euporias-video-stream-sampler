@@ -1,72 +1,65 @@
 @import 'https://fonts.googleapis.com/css?family=Open+Sans';
 
 $font-stack: 'Open Sans', sans-serif;
-$primary-color: #e28c26;
-$secondary-color: #c83d2a;
-$background-color: #75a0ca;
+$orange: #e28c26;
+$red: #c83d2a;
+$light-blue: #75a0ca;
+$dark-blue: #29566f;
 $white: #f7f4ed;
+$dark: #002e39;
 
 
 body {
   font: 100% $font-stack;
-  color: $white;
-  background-color: $background-color;
+  color: $dark-blue;
+  background-color: $light-blue;
 
   h3{
     text-align: center;
   }
 
-  #header {
-    background-color: $white;
-    padding:10px 20px;
-    color: grey;
-
-   button {
-      padding:10px;
-      margin-left:20px;
-      border-radius: 5px;
+  button {
+    padding:10px;
+    margin-left:20px;
+    border-radius: 5px;
+    color: $white;
+    background-color: $orange;
+    &:hover{
+      background-color: lighten($orange, 10);
     }
-
+  }
     #record-button {
         color: $white;
-        background-color: $secondary-color;
+        background-color: $red;
+        &:hover {
+          background-color: lighten($red, 10);
+        }
     }
 
-    #play-record-button {
-      color: $white;
-      background-color: $primary-color;
+  #header {
+    background-color: $white;
+    background-image: url(../images/BellHouse_Header_Banner.jpg);
+    color: $white;
+
+    img {
+      width: 350px;
     }
+
   }
 
   #controls {
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: $secondary-color;
-    border-top: 1px solid $white;
-    border-bottom: 1px solid $white;
+    background-color: $white;
+    border-top: 3px solid $red;
+    border-bottom: 3px solid $red;
 
     label{
       padding-left: 20px;
     }
 
     input {
-      color:$background-color;
-    }
-
-    button {
-      padding:10px;
-      margin-left:20px;
-      border-radius: 5px;
-    }
-
-    #play-record-button,
-    #sampling-button {
-      color: $white;
-      background-color: $primary-color;
-    }
-
-    #record-button {
-      color: $primary-color;
+      max-width: 65px;
     }
 
   }
@@ -87,7 +80,7 @@ body {
   }
 
   #footer {
-    background-color: $primary-color;
+    background-color: $orange;
   }
 
 }
@@ -101,14 +94,14 @@ body {
       margin: 12px;
       padding: 1em;
       border: 1px solid $white;
-      background-color: $primary-color;
+      background-color: $orange;
     }
 
 
     input {
       padding: 5px;
       width: 80%;
-      color: $background-color;
+      color: $light-blue;
     }
 
     button {
@@ -116,7 +109,7 @@ body {
       border-radius: 5px;
       margin-top: 15px;
       margin-right: 10px;
-      background-color: $background-color;
+      background-color: $light-blue;
     }
 
     legend {
