@@ -39,8 +39,10 @@ body {
   #header {
     background-color: $white;
     background-image: url(../images/BellHouse_Header_Banner.jpg);
-    color: $white;
-
+    
+    h2 {
+      color: $white;
+    }
     img {
       width: 350px;
     }
