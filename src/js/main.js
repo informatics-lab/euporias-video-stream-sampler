@@ -1,6 +1,6 @@
 'use strict';
 const CAMERA_FRAME_RATE = 1000 / 20;
-const BELL_SERVER = "https://bellhouse.eu.ngrok.io";
+const BELL_SERVER = "https://ellhouse.eu.ngrok.io";
 
 
 var request = require('request');
@@ -11,7 +11,10 @@ var recording = false;
 var playing = false;
 var threshold = 5;
 var samplingInterval, sampleLoop, sample, sampleDiv;
-var video, videoCanvas, videoCanvasCtx;
+var videoCanvas, videoCanvasCtx;
+var videoHeight, videoWidth;
+
+var video = document.createElement('video');
 
 /*Setup event listeners for controls on homepage */
 initControls();
@@ -19,24 +22,28 @@ initVideo();
 
 
 function initVideo() {
-    video = document.createElement('video');
-    video.width = 600;
-    video.height = 400;
+    const height = videoHeight ? videoHeight: 400;
+    const width = videoWidth ? videoWidth : 600;
+    console.log(width);
+    video.width = width;
+    video.height = height;
     videoCanvas = document.getElementById('videoCanvas');
-    videoCanvas.width = 600;
-    videoCanvas.height = 400;
+    videoCanvas.width = width;
+    videoCanvas.height = height;
 
     videoCanvasCtx = videoCanvas.getContext('2d');
 
     setInterval(function () {
-        videoCanvasCtx.clearRect(0, 0, 600, 400);
-        videoCanvasCtx.drawImage(video, 0, 0, 600, 400, 0, 0, 600, 400);
+        videoCanvasCtx.clearRect(0, 0, width, height);
+        videoCanvasCtx.drawImage(video, 0, 0, width, height, 0, 0, width, height);
     }, CAMERA_FRAME_RATE);
 }
 
 function initControls() {
     var dim1 = document.getElementById('grid-dim-1');
     var dim2 = document.getElementById('grid-dim-2');
+    var width = document.getElementById('video-width');
+    var height = document.getElementById('video-height');
     var sampleInterval = document.getElementById('sample-interval');
     var sampleThreshold = document.getElementById('sample-threshold');
     var samplingButton = document.getElementById('sampling-button');
@@ -58,6 +65,24 @@ function initControls() {
         var value2 = evt.target.value;
         var value1 = dim1.value;
         setGridDims(value1, value2);
+        if (sampling) {
+            createSamples();
+        }
+    });
+
+    height.addEventListener('change', function (evt) {
+        var width = videoWidth;
+        var newHeight = height.value;
+        setVideoDims(newHeight, width);
+        if (sampling) {
+            createSamples();
+        }
+    });
+
+    width.addEventListener('change', function (evt) {
+        var height = videoHeight;
+        var newWidth = width.value;
+        setVideoDims(height, newWidth);
         if (sampling) {
             createSamples();
         }
@@ -156,6 +181,12 @@ function setGridDims(val1, val2) {
     }
 }
 
+function setVideoDims(height, width) {
+    videoHeight = height;
+    videoWidth = width;
+    initVideo();
+}
+
 function createSamples() {
     console.log("Initialising sample, sampling at " + samplingInterval + " millis");
 
@@ -167,8 +198,8 @@ function createSamples() {
                                 y : 0
                             },
                             bottomRight : {
-                                x : 600,
-                                y : 400
+                                x : videoWidth,
+                                y : videoHeight
                             }
                         };
 
